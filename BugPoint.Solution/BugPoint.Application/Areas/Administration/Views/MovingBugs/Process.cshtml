@@ -1,0 +1,494 @@
+﻿@model BugPoint.ViewModel.MovingBugs.MovingBugsViewModel
+
+
+<div class="card card-secondary card-outline">
+    <div class="card-header">
+        <h3 class="card-title"> <i class="fas fa-bullseye"></i> Bulk Action </h3>
+    </div>
+    <!-- /.card-header -->
+    <!-- form start -->
+
+    <div class="card-body register-card-body">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label class="mandatory" asp-for="Project"></label>
+                <input asp-for="Project" maxlength="50" placeholder="Enter Project Name" class="form-control" />
+                <span class="text-danger" asp-validation-for="Project"></span>
+                <input type="hidden" id="hdnProjectId" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label class="mandatory" asp-for="RoleId"></label>
+                <select asp-for="RoleId" class="form-control"
+                        asp-items="@(new SelectList(Model.ListofRoles, "Value", "Text"))">
+                </select>
+                <span class="text-danger" asp-validation-for="RoleId"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label class="mandatory" asp-for="FromUser"></label>
+                <input asp-for="FromUser" maxlength="90" placeholder="Enter From User" class="form-control" />
+                <span class="text-danger" asp-validation-for="FromUser"></span>
+                <input type="hidden" id="hdnfromUserId" />
+            </div>
+            <div class="form-group col-md-3">
+                <label class="mandatory" asp-for="ToUser"></label>
+                <input asp-for="ToUser" maxlength="90" placeholder="Enter To User" class="form-control" />
+                <span class="text-danger" asp-validation-for="ToUser"></span>
+                <input type="hidden" id="hdntoUserId" />
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer">
+
+    </div>
+</div>
+<div class="card  card-outline">
+
+    <div class="card-body register-card-body">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-bug"></i> All Bugs</h3>
+            </div>
+            <div class="card-body register-card-body">
+                <div class="col-md-12">
+
+                    <table id="GridDataTable" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" data-orderable="false" name="select_all" value="1" id="GridDataTable-select-all"></th>
+
+                                <th>Project</th>
+                                <th>Summary</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card  card-outline">
+
+    <div class="card-body register-card-body">
+        <div class="card">
+          
+            <div class="card-body register-card-body">
+                <div class="col-md-12">
+                    <input id="btnsubmit" class="btn btn-success" type="submit" value="Start" />
+                    <input id="btnclear" class="btn btn-primary" type="button" value="Clear" />
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@await Html.PartialAsync("~/Views/Shared/_DatatablesCss.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_DatatablesScripts.cshtml")
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#FromUser").prop('disabled', true);
+            $("#ToUser").prop('disabled', true);
+
+        });
+
+        $('#GridDataTable-select-all').on('click',
+            function () {
+                // Get all rows with search applied
+                var table = $('#GridDataTable').DataTable();
+
+
+                var rows = table.rows({ 'search': 'applied' }).nodes();
+                // Check/uncheck checkboxes for all rows in the table
+                $('input[type="checkbox"]', rows).prop('checked', this.checked);
+            });
+
+
+        $("#Project").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Administration/MovingBugs/GetProjects",
+                    type: "GET",
+                    dataType: "json",
+                    data: { projectname: request.term },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.Text, value: item.Value };
+                            }));
+                    }
+                });
+            },
+            error: function (response) {
+                alert(response.responseText);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            select: function (e, i) {
+                $("#Project").val(i.item.label);
+                $("#hdnProjectId").val(i.item.value);
+
+                if ($("#hdnProjectId").val() != "") {
+
+
+                    $("#FromUser").prop('disabled', false);
+
+
+                }
+                return false;
+            },
+            minLength: 1
+        });
+
+        $("#FromUser").autocomplete({
+            source: function (request, response) {
+                if ($("#RoleId").val() == "") {
+                    $.alert({
+                        title: 'Alert!',
+                        content: 'Please Select User Role!',
+                        type: 'red'
+                    });
+                    $("#FromUser").val('');
+                }
+
+                $.ajax({
+                    url: "/Administration/MovingBugs/GetUsernames",
+                    type: "GET",
+                    dataType: "json",
+                    data: { roleId: $("#RoleId").val(), username: request.term },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.Text, value: item.Value };
+                            }));
+                    }
+                });
+
+            },
+            error: function (response) {
+                alert(response.responseText);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            select: function (e, i) {
+                $("#FromUser").val(i.item.label);
+                $("#hdnfromUserId").val(i.item.value);
+                $("#ToUser").prop('disabled', false);
+                bindgrid();
+                return false;
+            },
+            minLength: 1
+        });
+
+        $("#ToUser").autocomplete({
+            source: function (request, response) {
+                if ($("#RoleId").val() == "") {
+                    $.alert({
+                        title: 'Alert!',
+                        content: 'Please Select User Role!',
+                        type: 'red'
+                    });
+                    $("#ToUser").val('');
+                }
+
+                $.ajax({
+                    url: "/Administration/MovingBugs/GetToUserUsernames",
+                    type: "GET",
+                    dataType: "json",
+                    data: { roleId: $("#RoleId").val(), UserId: $("#hdnfromUserId").val(), username: request.term },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.Text, value: item.Value };
+                            }));
+                    }
+                });
+
+            },
+            error: function (response) {
+                alert(response.responseText);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            select: function (e, i) {
+                $("#ToUser").val(i.item.label);
+                $("#hdntoUserId").val(i.item.value);
+                return false;
+            },
+            minLength: 1
+        });
+
+        $("#btnsubmit").click(function () {
+            if ($("#hdnProjectId").val() == '') {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select Project',
+                    type: 'red'
+                });
+            } else if ($("#RoleId").val() == '') {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select Role',
+                    type: 'red'
+                });
+            } else if ($("#hdnfromUserId").val() == '') {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select From User',
+                    type: 'red'
+                });
+            } else if ($("#hdntoUserId").val() == '') {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select to User',
+                    type: 'red'
+                });
+            } else {
+
+                $("#loader").show();
+
+                var valuesx = [];
+
+                var table = $('#GridDataTable').DataTable();
+                // Iterate over all checkboxes in the table
+                table.$('input[type="checkbox"]').each(function () {
+                    // If checkbox doesn't exist in DOM
+
+                    // If checkbox is checked
+                    if (this.checked) {
+                        var checkname = this.name;
+                        var checkval = this.value;
+                        valuesx.push(this.value);
+                    }
+                });
+
+                if (valuesx.length == 0) {
+                    $.alert({
+                        title: 'Validation!',
+                        content: 'Select Bugs to assign',
+                        type: 'red'
+                    });
+
+                    $("#loader").hide();
+                    return false;
+                } else {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Administration/MovingBugs/Process",
+                        data:
+                        {
+                            ProjectId: $("#hdnProjectId").val(),
+                            FromUserId: $("#hdnfromUserId").val(),
+                            ToUserId: $("#hdntoUserId").val(),
+                            ListofBugs: valuesx,
+                            RoleId: $("#RoleId").val()
+                        },
+                        success: function (data) {
+                            if (data.status == "Success") {
+                                $("#loader").hide();
+                                $.confirm({
+                                    title: 'Alert!',
+                                    content: 'Project Assigned Successfully!',
+                                    type: 'green',
+                                    buttons: {
+                                        OK: function () {
+                                            bindgrid();
+                                        }
+                                    }
+                                });
+
+
+                            } else if (data.status == "Validation") {
+                                $.alert({
+                                    title: 'Alert!',
+                                    content: 'No records Selected to Process.',
+                                    type: 'red'
+                                });
+                                $("#loader").hide();
+                            }
+                            else if (data.status == "FromUser_Validation") {
+                                $.alert({
+                                    title: 'Alert!',
+                                    content: 'FromUser Required.',
+                                    type: 'red'
+                                });
+                                $("#loader").hide();
+                            }
+                            else if (data.status == "ToUser_Validation") {
+                                $.alert({
+                                    title: 'Alert!',
+                                    content: 'ToUser Required.',
+                                    type: 'red'
+                                });
+                                $("#loader").hide();
+                            }
+                            else if (data.status == "Project_Validation") {
+                                $.alert({
+                                    title: 'Alert!',
+                                    content: 'Project Required',
+                                    type: 'red'
+                                });
+                                $("#loader").hide();
+                            }
+                            else if (data.status == "Role_Validation") {
+                                $.alert({
+                                    title: 'Alert!',
+                                    content: 'Role Required.',
+                                    type: 'red'
+                                });
+                                $("#loader").hide();
+                            }
+                            else {
+                                $.alert({
+                                    title: 'Alert!',
+                                    content: 'Something Went Wrong Try Again.',
+                                    type: 'red'
+                                });
+                                $("#loader").hide();
+                            }
+
+                        }
+                    });
+                }
+
+
+            }
+
+
+        });
+
+
+        $("#btnclear").click(function () {
+            $.confirm({
+                title: 'Confirmation!',
+                type: 'green',
+                content: 'Do you want to Refresh Page?',
+                buttons: {
+                    confirm: function () {
+                        window.location.reload();
+                    },
+                    cancel: function () {
+                        $.alert('Canceled!');
+                    }
+                }
+            });
+        });
+
+        function bindgrid() {
+            if ($("#hdnProjectId").val() != "" && $("#hdnfromUserId").val() != "") {
+
+
+                $('#GridDataTable').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": true,
+                    "destroy": true,
+                    "searching": false,
+                    "lengthMenu": [[50], [50]],
+                    "iDisplayLength": 50,
+                    "ajax": {
+                        "url": "/Administration/MovingBugs/GridAllAssignedBugs",
+                        "type": "POST",
+                        "datatype": "json",
+                        "data": {
+                            "projectId": $("#hdnProjectId").val(),
+                            "fromUserId": $("#hdnfromUserId").val(),
+                            "roleId": $("#RoleId").val()
+                        }
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": [0],
+                            "orderable": false,
+                            "searchable": false,
+                            'className': 'dt-body-center',
+                            'render': function (data, type, full, meta) {
+                                return '<input type="checkbox" name="BugId[]" value="' + $('<div/>').text(data).html() + '">';
+                            }
+                        },
+                        {
+                            "targets": [1],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [2],
+                            "orderable": false,
+                            "searchable": false
+                        }
+                    ],
+                    "columns": [
+                        { "data": "BugId", "name": "BugId", "autoWidth": true },
+                        { "data": "ProjectName", "name": "ProjectName", "autoWidth": true },
+                        { "data": "Summary", "name": "Summary", "autoWidth": true }
+                    ]
+                });
+            } else {
+                alert('Select');
+            }
+        }
+
+        function Delete(assignedProjectId, accessType) {
+            if (assignedProjectId == "") {
+                $.alert('Something went wrong. Please Try Once Again After Sometime.');
+            } else {
+                $.confirm({
+                    title: 'Delete!',
+                    type: 'red',
+                    content: 'Do you want to Remove Project Access ?',
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                url: "/Administration/AssignProject/RemoveProjectAccess",
+                                type: "POST",
+                                data: { AssignedProjectId: assignedProjectId, AccessType: accessType },
+                                success: function (data, textStatus, xhr) {
+                                    if (data.Result == "success") {
+                                        $('#GridDataTable').DataTable().clear().draw();
+                                    }
+                                    if (data.Result == "failed") {
+                                        $.alert('Something Went Wrong');
+                                    }
+                                },
+                                error: function (xhr, status, err) {
+                                    if (xhr.status == 401) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                    if (xhr.status == 500) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                        }
+                    }
+                });
+            }
+
+
+        }
+    </script>
+}

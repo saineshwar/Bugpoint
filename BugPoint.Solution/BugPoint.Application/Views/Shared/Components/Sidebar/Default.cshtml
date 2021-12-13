@@ -1,0 +1,107 @@
+﻿
+@using Microsoft.AspNetCore.Http
+@using BugPoint.Application.Views.Shared.Components.SideMenu
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+
+
+    @if (!string.IsNullOrEmpty(Context.Session.GetString("Portal.RoleId")))
+    {
+        if (Context.Session.GetString("Portal.String.RoleId") == "2")
+        {
+            <a asp-area="Administration" class="brand-link" asp-controller="Dashboard" asp-action="Dashboard">
+                <img src="~/Images/Logos/ladybug32.png" alt="BugPoint Logo" class="brand-image img-circle">
+                <span class="brand-text font-weight-light">BugPoint</span>
+            </a>
+        }
+        else if (Context.Session.GetString("Portal.String.RoleId") == "3")
+        {
+            <a asp-area="" class="brand-link" asp-controller="Manager" asp-action="Dashboard">
+                <img src="~/Images/Logos/ladybug32.png" alt="BugPoint Logo" class="brand-image img-circle">
+                <span class="brand-text font-weight-light">BugPoint</span>
+            </a>
+        }
+        else if (Context.Session.GetString("Portal.String.RoleId") == "4")
+        {
+            <a asp-area="" class="brand-link" asp-controller="Dashboard" asp-action="Dashboard">
+                <img src="~/Images/Logos/ladybug32.png" alt="BugPoint Logo" class="brand-image img-circle">
+                <span class="brand-text font-weight-light">BugPoint</span>
+            </a>
+        }
+        else if (Context.Session.GetString("Portal.String.RoleId") == "6")
+        {
+            <a asp-area="" class="brand-link" asp-controller="Dashboard" asp-action="MyDashboard">
+                <img src="~/Images/Logos/ladybug32.png" alt="BugPoint Logo" class="brand-image img-circle">
+                <span class="brand-text font-weight-light">BugPoint</span>
+            </a>
+        }
+        else if (Context.Session.GetString("Portal.String.RoleId") == "5" || Context.Session.GetString("Portal.String.RoleId") == "8")
+        {
+            <a asp-area="" class="brand-link" asp-controller="ReporterDashboard" asp-action="Dashboard">
+                <img src="~/Images/Logos/ladybug32.png" alt="BugPoint Logo" class="brand-image img-circle">
+                <span class="brand-text font-weight-light">BugPoint</span>
+            </a>
+        }
+        else if (Context.Session.GetString("Portal.String.RoleId") == "7")
+        {
+            <a asp-area="" class="brand-link" asp-controller="ReporterDashboard" asp-action="MyDashboard">
+                <img src="~/Images/Logos/ladybug32.png" alt="BugPoint Logo" class="brand-image img-circle">
+                <span class="brand-text font-weight-light">BugPoint</span>
+            </a>
+        }
+        else
+        {
+            <a asp-area="Administration" class="brand-link" asp-controller="Dashboard" asp-action="Dashboard">
+                <img src="~/Images/Logos/ladybug32.png" alt="BugsPoint Logo" class="brand-image img-circle">
+                <span class="brand-text font-weight-light">BugsPoint</span>
+            </a>
+        }
+
+    }
+    else
+    {
+        <img src="~/Images/Logos/ladybug32.png" alt="BugsPoint Logo" class="brand-image img-circle">
+        <span class="brand-text font-weight-light">BugPoint</span>
+    }
+
+
+    <div class="sidebar">
+        @if (!string.IsNullOrEmpty(Context.Session.GetString("Portal.FirstName")))
+        {
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="image">
+                   
+                    
+                    @if (Context.Session.GetString("Portal.Gender") == "M")
+                    {
+                        <img id="myprofile_pic" src="~/Images/faces/man.png" class="img-circle elevation-2" alt="User Image">
+                    }
+                    else
+                    {
+                        <img id="myprofile_pic" src="~/Images/faces/woman.png" class="img-circle elevation-2" alt="User Image">
+                    }
+
+                </div>
+                <div class="info">
+                    <a href="/MyAccount/Profile" class="d-block">Hi, @Context.Session.GetString("Portal.FirstName") </a>
+                </div>
+            </div> }
+        else
+        {
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="info">
+                    <a href="javascript:void(0);" class="d-block">Hi, Visitor</a>
+                </div>
+            </div>}
+
+        @if (Context.Session.GetString("Portal.IsFirstLogin") == "1")
+        {
+
+        }
+        else
+        {
+            @(await Component.InvokeAsync<SideMenuViewComponent>())
+        }
+
+    </div>
+</aside>

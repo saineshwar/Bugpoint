@@ -1,0 +1,27 @@
+﻿@using BugPoint.Common
+@model BugPoint.ViewModel.BugsList.ExpressChangesUserViewModel
+
+@if (ViewBag.CurrentBugStatus != null)
+{
+    if ((int)ViewBag.CurrentBugStatus == (int)StatusHelper.Status.CLOSED)
+    {
+
+       
+    }
+    else
+    {
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <input asp-for="RequestedUserId" type="hidden"/>
+                <span>
+                    <label asp-for="RequestforSolution"></label> 
+                    <input asp-for="RequestforSolution" maxlength="10" placeholder="Enter Username" class="form-control"/>
+                </span>
+                <br/>
+                <span>
+                <button type="button" id="btnAssignsubmit" class="btn btn-success"> <i class="fas fa-exchange-alt"></i> Submit</button>
+                </span>
+            </div>
+        </div>
+    }
+}

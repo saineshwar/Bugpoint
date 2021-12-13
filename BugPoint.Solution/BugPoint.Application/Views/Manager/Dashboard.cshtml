@@ -1,0 +1,777 @@
+﻿@model BugPoint.ViewModel.Charts.ReportManagerChartTableViewModel
+@{
+    ViewBag.PageName = "Dashboard";
+    Layout = "_LayoutUser";
+}
+
+<link href="~/plugins/chart.js/Chart.css" rel="stylesheet" />
+<script src="~/plugins/chart.js/Chart.min.js"></script>
+
+<div class="row">
+    <div class="col-md-6">
+        <select asp-for="ProjectId" class="form-control"
+                asp-items="@(new SelectList(Model.ListofProjects, "Value", "Text"))">
+        </select>
+        <hr />
+    </div>
+    <div class="col-md-6">
+        <form autocomplete="off" asp-controller="BugSearch" asp-antiforgery="true" id="bugform" asp-action="Search" method="post">
+            <div class="form-row">
+                <div class="col-md-8">
+                    <input asp-for="BugIdSearch" onkeypress="return onlyNumbers(event);" type="text" maxlength="50" placeholder="Enter BugId to Search" class="form-control" />
+                    <span class="text-danger" asp-validation-for="BugIdSearch"></span>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" id="btnsubmit" class="btn btn-default"> <i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+        </form>
+        <hr />
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+
+
+                <h3 class="card-title"><strong>Total Bugs Count</strong></h3>
+
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadtotalbugscount"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+
+
+                <h3 class="card-title"><strong>Tester Teams Bugs Status</strong></h3>
+
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadTeamsStatusData"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+
+
+                <h3 class="card-title"><strong>Developer Teams Bugs Status</strong></h3>
+
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadDeveloperTeamsStatusData"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+
+    <div class="col-md-6">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Bug Status</strong></h3>
+            </div>
+            <div id="Piecanvascontaniner" class="card-body">
+                <canvas id="Piecanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Bug Priority</strong></h3>
+            </div>
+            <div id="PiePriorityCanvascontainer" class="card-body">
+                <canvas id="PiePriorityCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Hardware</strong></h3>
+            </div>
+            <div class="card-body">
+                <div id="loadHardwareData"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Browser</strong></h3>
+            </div>
+            <div class="card-body">
+                <div id="loadBrowserData"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Version</strong></h3>
+            </div>
+            <div class="card-body">
+                <div id="loadVersionData"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="card-title"><strong>Web Framework</strong></h3>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="loadWebFrameworkdata"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="card-title"><strong>Severity</strong></h3>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadStatusData"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="card-title"><strong>BugTypes</strong></h3>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadBugTypesData"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="card-title"><strong>Environment</strong></h3>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadTestedEnvironmentdata"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+         <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="card-title"><strong>Operating System</strong></h3>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="loadOsdata"></div>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+
+<script>
+
+
+    $(document).ready(function () {
+        $("#loader").show();
+        bindpiedata();
+        binddata();
+        bindPiePriorityCharttdata();
+     
+        bindHardwareDetailsdata();
+        bindpiebrowserdata();
+        bindVersionDetailsdata();
+        bindOperatingSystemdata();
+        bindWebFrameworkdata();
+
+        $("#ProjectId").change(function () {
+            if ($("#ProjectId").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Please Choose Project.',
+                    type: 'red'
+                });
+            } else {
+                $("#loader").show();
+                bindpiedata();
+                bindPiePriorityCharttdata();
+           
+                binddata();
+                bindHardwareDetailsdata();
+                bindpiebrowserdata();
+                bindVersionDetailsdata();
+                bindOperatingSystemdata();
+                bindWebFrameworkdata();
+                $("#loader").hide();
+            }
+        });
+    });
+
+    function binddata() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetSeveritywiseCount",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadStatusData").empty();
+                    $("#loadStatusData").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetBugTypeProjectwiseCount",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadBugTypesData").empty();
+                    $("#loadBugTypesData").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetTestedEnvironmentProjectwiseCount",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadTestedEnvironmentdata").empty();
+                    $("#loadTestedEnvironmentdata").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetTesterTeamsBugsCount",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadTeamsStatusData").empty();
+                    $("#loadTeamsStatusData").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetTotalBugsCount",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadtotalbugscount").empty();
+                    $("#loadtotalbugscount").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetDeveloperTeamsBugsCount",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadDeveloperTeamsStatusData").empty();
+                    $("#loadDeveloperTeamsStatusData").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+    }
+
+    function bindpiedata() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetPieChartData",
+            dataType: "json",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $('#Piecanvas').remove();
+                    $('#Piecanvascontaniner').append('<canvas id="Piecanvas"><canvas>');
+
+
+                    var ctx1 = document.getElementById("Piecanvas").getContext("2d");
+                    window.myBar = new Chart(ctx1,
+                        {
+                            type: 'pie',
+                            data: data,
+                            options:
+                            {
+                                title:
+                                {
+                                    display: true,
+                                    text: "Bug Status"
+                                },
+                                responsive: true,
+                                maintainAspectRatio: true
+                            }
+                        });
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+    }
+
+    function bindPiePriorityCharttdata() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetPriorityChartData",
+            dataType: "json",
+            data: jsonObject,
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $('#PiePriorityCanvas').remove();
+                    $('#PiePriorityCanvascontainer').append('<canvas id="PiePriorityCanvas"><canvas>');
+
+
+                    var ctx2 = document.getElementById("PiePriorityCanvas").getContext("2d");
+                    window.myBar = new Chart(ctx2,
+                        {
+                            type: 'doughnut',
+                            data: data,
+                            options:
+                            {
+                                title:
+                                {
+                                    display: true,
+                                    text: "Bug Priority"
+                                },
+                                responsive: true,
+                                maintainAspectRatio: true
+                            }
+                        });
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+    }
+
+    function bindPieOpenClosedCharttdata() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetPieOpenCloseChartData",
+            dataType: "json",
+            data: jsonObject,
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+
+                    $('#DoughnutOpenCloseCanvas').remove();
+                    $('#DoughnutOpenCloseCanvascontainer').append('<canvas id="DoughnutOpenCloseCanvas"><canvas>');
+
+                    var ctx3 = document.getElementById("DoughnutOpenCloseCanvas").getContext("2d");
+                    window.myBar = new Chart(ctx3,
+                        {
+                            type: 'pie',
+                            data: data,
+                            options:
+                            {
+                                title:
+                                {
+                                    display: true,
+                                    text: "Bug Count"
+                                },
+                                responsive: true,
+                                maintainAspectRatio: true
+                            }
+                        });
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+    }
+
+    function bindCounts() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetStatusWiseBugsCount",
+            dataType: "json",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#OpenSpan").empty();
+                    $("#ConfirmedSpan").empty();
+                    $("#InProgressSpan").empty();
+                    $("#ReOpenedSpan").empty();
+                    $("#ResolvedSpan").empty();
+                    $("#InTestingSpan").empty();
+                    $("#ClosedSpan").empty();
+                    $("#OnHoldSpan").empty();
+                    $("#OnRejectedSpan").empty();
+                    $("#OnReplySpan").empty();
+                    $("#DuplicateSpan").empty();
+                    $("#UnConfirmedSpan").empty();
+
+                    $("#OpenSpan").html(data[0].OpenCount);
+                    $("#ConfirmedSpan").html(data[0].ConfirmedCount);
+                    $("#InProgressSpan").html(data[0].InProgressCount);
+                    $("#ReOpenedSpan").html(data[0].ReOpenedCount);
+                    $("#ResolvedSpan").html(data[0].ResolvedCount);
+                    $("#InTestingSpan").html(data[0].InTestingCount);
+                    $("#ClosedSpan").html(data[0].ClosedCount);
+                    $("#OnHoldSpan").html(data[0].OnHoldCount);
+                    $("#OnRejectedSpan").html(data[0].RejectedCount);
+                    $("#OnReplySpan").html(data[0].ReplyCount);
+                    $("#DuplicateSpan").html(data[0].DuplicateCount);
+                    $("#UnConfirmedSpan").html(data[0].UnConfirmedCount);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+
+    }
+
+    function bindpiebrowserdata() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetBrowserChartData",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadBrowserData").empty();
+                    $("#loadBrowserData").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+        $("#loader").hide();
+    }
+
+    function bindHardwareDetailsdata() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetHardwareDetails",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadHardwareData").empty();
+                    $("#loadHardwareData").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+        $("#loader").hide();
+    }
+
+    function bindVersionDetailsdata() {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetVersionDetails",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadVersionData").empty();
+                    $("#loadVersionData").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+        $("#loader").hide();
+    }
+
+    function bindOperatingSystemdata()
+    {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetOperatingSystemDetails",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadOsdata").empty();
+                    $("#loadOsdata").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+        $("#loader").hide();
+    }
+
+    function bindWebFrameworkdata()
+    {
+        var jsonObject =
+        {
+            ProjectId: $("#ProjectId").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Manager/GetWebFrameworkDetails",
+            dataType: "html",
+            data: jsonObject,
+
+            success: function (data, textStatus, xhr) {
+                if (data.length != 0) {
+                    $("#loadWebFrameworkdata").empty();
+                    $("#loadWebFrameworkdata").html(data);
+                }
+            },
+            error: function (xhr, status, err) {
+                if (xhr.status == 400) {
+                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                }
+            }
+        });
+        $("#loader").hide();
+    }
+
+    function DisplayModelStateErrors(modelState) {
+        var message = "";
+        var propStrings = Object.keys(modelState);
+
+        $.each(propStrings, function (i, propString) {
+            var propErrors = modelState[propString];
+            $.each(propErrors, function (j, propError) {
+                message += propError;
+            });
+            message += "\n";
+        });
+
+        alert(message);
+    };
+</script>
+

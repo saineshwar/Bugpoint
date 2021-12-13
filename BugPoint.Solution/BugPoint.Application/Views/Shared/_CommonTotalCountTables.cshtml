@@ -1,0 +1,56 @@
+﻿@model List<BugPoint.ViewModel.Charts.DisplayBugsReportCount>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+           
+            <th>Open</th>
+            <th>Closed</th>
+            <th>Confirmed</th>
+            <th>InProgress</th>
+            <th>ReOpened</th>
+            <th>Resolved</th>
+            <th>InTesting</th>
+           
+            <th>OnHold</th>
+            <th>Rejected</th>
+            <th>Reply</th>
+            <th>Duplicate</th>
+            <th>UnConfirmed</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var data in Model)
+            {
+        <tr>
+            
+            <td>@data.Open</td>
+            <td>@data.Closed</td>
+            <td>@data.Confirmed</td>
+            <td>@data.InProgress</td>
+            <td>@data.ReOpened</td>
+            <td>@data.Resolved</td>
+            <td>@data.InTesting</td>
+
+            <td>@data.OnHold</td>
+            <td>@data.Rejected</td>
+            <td>@data.Reply</td>
+            <td>@data.Duplicate</td>
+            <td>@data.UnConfirmed</td>
+        </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>
+                    <i class="far fa-smile"></i>  No Bugs to Display.
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>

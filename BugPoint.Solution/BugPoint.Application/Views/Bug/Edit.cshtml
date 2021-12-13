@@ -1,0 +1,414 @@
+﻿@model BugPoint.ViewModel.Bugs.EditBugViewModel
+@{
+    Layout = "_LayoutUser";
+}
+
+<form autocomplete="off" asp-controller="Bug" asp-antiforgery="true" id="bugform" enctype="multipart/form-data" asp-action="Edit" method="post">
+    <div class="col-md-12">
+        <div class="card card-cyan card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Edit Bug</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+
+            <div class="card-body register-card-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ProjectId"></label>
+                        <select asp-for="ProjectId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofProjects, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="ProjectId"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ProjectComponentId"></label>
+                        <select asp-for="ProjectComponentId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofComponents, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="ProjectComponentId"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label> Component Description </label>
+                        <textarea disabled="disabled" asp-for="ComponentDescription" placeholder="Component Description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <label class="mandatory" asp-for="Summary"></label>
+                        <input asp-for="Summary" maxlength="100" placeholder="Enter Bug Title" class="form-control" />
+                        <span class="text-danger" asp-validation-for="Summary"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="AssignBugto"></label>
+                        <select asp-for="AssignBugto" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofUsers, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="AssignBugto"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card card-cyan card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Bug Properties</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+
+            <div class="card-body register-card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="PriorityId"></label>
+                        <select asp-for="PriorityId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofPriority, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="PriorityId"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="SeverityId"></label>
+                        <select asp-for="SeverityId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofSeverity, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="SeverityId"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="VersionId"></label>
+                        <select asp-for="VersionId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofVersion, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="VersionId"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="HardwareId"></label>
+                        <select asp-for="HardwareId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofHardware, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="HardwareId"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="BrowserId"></label>
+                        <select asp-for="BrowserId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofBrowser, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="BrowserId"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="OperatingSystemId"></label>
+                        <select asp-for="OperatingSystemId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofOperatingSystem, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="OperatingSystemId"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="WebFrameworkId"></label>
+                        <select asp-for="WebFrameworkId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofWebFramework, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="WebFrameworkId"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="TestedOnId"></label>
+                        <select asp-for="TestedOnId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofTestedOn, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="TestedOnId"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="mandatory" asp-for="BugTypeId"></label>
+                        <select asp-for="BugTypeId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofBugType, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="BugTypeId"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="Urls"></label>
+                        <input asp-for="Urls" maxlength="300" placeholder="Enter Url" class="form-control" />
+                        <span class="text-danger" asp-validation-for="Urls"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="StatusId"></label>
+                        <input type="hidden" asp-for="StatusId" />
+                        <select disabled="disabled" asp-for="StatusId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofStatus, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="StatusId"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-cyan card-outline">
+            <div class="card-header">
+                <h3 class="card-title mandatory">Bug Description</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="card-body register-card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+
+                        <textarea asp-for="Description" placeholder="Description" class="form-control" required="required"></textarea>
+                        <span class="text-danger" asp-validation-for="Description"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <input name="file1" id="file1" onchange="ValidateDocumentFile(this);" type="file" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input name="file2" id="file2" onchange="ValidateDocumentFile(this);" type="file" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input name="file3" id="file3" onchange="ValidateDocumentFile(this);" type="file" />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+
+        <div class="card card-cyan card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Bug Attachments</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="card-body register-card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+
+                        @if (Model.ListofAttachments != null)
+                        {
+                            @if (Model.ListofAttachments.Any())
+                            {
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Attachment</th>
+                                            <th>Download</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var attachment in Model.ListofAttachments)
+                                        {
+                                            <tr>
+                                                <td>@attachment.OriginalAttachmentName</td>
+                                                <td>
+                                                    <a class="btn btn-primary"
+                                                       data-toggle="tooltip" data-placement="top"
+                                                       title="Download Attachment !" onclick="downloadAttachment('@Model.BugId', '@attachment.AttachmentId')" href="javascript:void(0);"> <i class="fa fa-download"></i> Download </a>
+
+                                                </td>
+                                                <td>
+                                                    <a data-toggle="tooltip"
+                                                       data-placement="top"
+                                                       title="Delete Attachment !"
+                                                       class="btn btn-danger" onclick="deleteAttachment('@attachment.AttachmentId', '@Model.BugId')" href="javascript:void(0);"> <i class="fa fa-trash"></i> Delete </a>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+
+                            }
+                            else
+                            {
+                                <p> No Attachments</p>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-success card-outline">
+
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="card-body register-card-body">
+                <button type="button" id="btnsubmit" class="btn btn-success"> <i class="fas fa-check-circle"></i> Submit</button>
+                <a asp-area="" class="btn btn-primary" asp-controller="Buglist" asp-action="Show"><i class="fas fa-ban"></i> Cancel</a>
+            </div>
+        </div>
+    </div>
+
+    @Html.HiddenFor(m => m.BugId)
+    @Html.HiddenFor(m => m.BugSummaryId)
+    @Html.HiddenFor(m => m.BugDetailsId)
+    @Html.HiddenFor(m => m.BugTrackingId)
+</form>
+<script src="~/js/ckeditor/ckeditor.js"></script>
+<script asp-append-version="true" src="~/Scripts/custom/validate.file.js"></script>
+
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#ProjectId").change(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Bug/GetProjectComponents",
+                    data: { ProjectId: $("#ProjectId").val() },
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        $("#ProjectComponentId").empty();
+                        $.each(data.projectcollection,
+                            function (i) {
+                                var optionhtml = '<option value="' + data.projectcollection[i].Value + '">' + data.projectcollection[i].Text + '</option>';
+                                $("#ProjectComponentId").append(optionhtml);
+                            });
+
+                    },
+                    error: function (xhr, status, err) {
+                        if (xhr.status == 401) {
+                            alert('Error');
+                            window.location.href = "/Portal/Logout";
+                        }
+
+                        if (xhr.status == 500) {
+                            alert('Error');
+                            window.location.href = "/Portal/Logout";
+                        }
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Bug/GetUserList",
+                    data: { ProjectId: $("#ProjectId").val() },
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        $("#AssignBugto").empty();
+                        $.each(data.listofusers,
+                            function (i) {
+                                var optionhtml = '<option value="' + data.listofusers[i].Value + '">' + data.listofusers[i].Text + '</option>';
+                                $("#AssignBugto").append(optionhtml);
+                            });
+
+                    },
+                    error: function (xhr, status, err) {
+                        if (xhr.status == 401) {
+                            alert('Error');
+                            window.location.href = "/Portal/Logout";
+                        }
+
+                        if (xhr.status == 500) {
+                            alert('Error');
+                            window.location.href = "/Portal/Logout";
+                        }
+                    }
+                });
+
+            });
+
+            $("#ProjectComponentId").change(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Bug/GetProjectDescription",
+                    data: { ProjectComponentId: $("#ProjectComponentId").val() },
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        $("#ComponentDescription").empty();
+
+                        $("#ComponentDescription").text(data.ComponentDescription);
+                    },
+                    error: function (xhr, status, err) {
+                        if (xhr.status == 401) {
+                            alert('Error');
+                            window.location.href = "/Portal/Logout";
+                        }
+
+                        if (xhr.status == 500) {
+                            alert('Error');
+                            window.location.href = "/Portal/Logout";
+                        }
+                    }
+                });
+            });
+
+            $("#btnsubmit").click(function () {
+                if ($('#bugform').valid()) {
+
+                    var textboxData = CKEDITOR.instances.Description.getData();
+                    if (textboxData === '') {
+                        $.alert({
+                            title: 'Validation!',
+                            content: 'Enter Bug Description.',
+                            type: 'red'
+                        });
+                    } else {
+                        $.confirm({
+                            title: 'Confirmation!',
+                            type: 'green',
+                            content: 'Do you want to Create Bug?',
+                            buttons: {
+                                confirm: function () {
+                                    $("#loader").show();
+                                    $('#bugform').submit();
+                                },
+                                cancel: function () {
+                                    $.alert('Canceled!');
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        function downloadAttachment(bugId, attachmentsId) {
+            window.location = "/Bug/DownloadAttachMent?bugId=" + bugId + "&AttachmentId=" + attachmentsId;
+        }
+
+        function deleteAttachment(attachmentsId, bugId) {
+            var result = confirm("Do you want to delete this attachment!");
+            if (result === true) {
+                if (attachmentsId != "") {
+                    var jsonObject =
+                    {
+                        attachmentsId: attachmentsId,
+                        bugId: bugId
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Bug/DeleteAttachment",
+                        dataType: "json",
+                        data: jsonObject,
+                        success: function (data, textStatus, xhr) {
+                            if (data.Status === true) {
+                                alert("Attachment Deleted Successfully");
+                                location.reload();
+                            } else {
+                                alert("Something Went Wrong While Deleting Ticket Please Try Again after Sometime!");
+                            }
+
+                        },
+                        error: function (xhr, status, err) {
+                            if (xhr.status == 400) {
+                                DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        CKEDITOR.replace('Description', { htmlEncodeOutput: true });
+    </script>
+
+
+}

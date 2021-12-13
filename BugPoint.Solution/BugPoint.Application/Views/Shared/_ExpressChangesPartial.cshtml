@@ -1,0 +1,60 @@
+﻿@using BugPoint.Common
+@model BugPoint.ViewModel.BugsList.ExpressChangesViewModel
+
+@if (ViewBag.CurrentBugStatus != null)
+{
+    if ((int)ViewBag.CurrentBugStatus == (int)StatusHelper.Status.CLOSED)
+    {
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="Priority"></label> :
+                @Model.Priority
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="AssignedTo"></label> :
+                @Model.AssignedTo
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <button type="button" id="btnreopenbug" class="btn btn-block btn-outline-secondary">
+                    <i class="fas fa-envelope-open-text"></i> Reopen Bug
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label class="mandatory" asp-for="PriorityId"></label>
+                <select asp-for="PriorityId" class="form-control"
+                        asp-items="@(new SelectList(Model.ListofPriority, "Value", "Text"))">
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label class="mandatory" asp-for="AssignedToId"></label>
+                <select asp-for="AssignedToId" class="form-control"
+                        asp-items="@(new SelectList(Model.ListofUsers, "Value", "Text"))">
+                </select>
+            </div>
+        </div>
+
+        @if ((int) ViewBag.Currentrole == (int) RolesHelper.Roles.TesterTeamLead)
+        {
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label class="mandatory" asp-for="TesterId"></label>
+                    <select asp-for="TesterId" class="form-control"
+                            asp-items="@(new SelectList(Model.ListofTesters, "Value", "Text"))">
+                    </select>
+                </div>
+            </div>
+        }
+    }
+}

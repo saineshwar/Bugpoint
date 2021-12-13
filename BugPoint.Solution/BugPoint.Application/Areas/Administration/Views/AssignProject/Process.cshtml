@@ -1,0 +1,433 @@
+﻿@model BugPoint.ViewModel.Assigned.RequestAssignedProjectViewModel
+@{
+    ViewBag.PageName = "Assign Project";
+}
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Add</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form autocomplete="off" asp-controller="AssignProject" asp-antiforgery="true" asp-action="Process" method="post">
+
+            <div class="card-body register-card-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="Project"></label>
+                        <input asp-for="Project" maxlength="50" placeholder="Enter Project Name" class="form-control" />
+                        <span class="text-danger" asp-validation-for="Project"></span>
+                        <input type="hidden" id="hdnProjectId" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="RoleId"></label>
+                        <select asp-for="RoleId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofRoles, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="RoleId"></span>
+                        <input type="hidden" id="hdnRoleId" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="User"></label>
+                        <input asp-for="User" maxlength="90" placeholder="Enter Username" class="form-control" />
+                        <span class="text-danger" asp-validation-for="User"></span>
+                        <input type="hidden" id="hdnUserId" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <button type="button" id="btnsubmit" class="btn btn-success">Save</button>
+                <a asp-area="Administration" class="btn btn-danger" asp-controller="AssignProject" asp-action="Process">Clear</a>
+            </div>
+        </form>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Assigned Project Access</h3>
+        </div>
+        <div class="card-body register-card-body">
+            <div class="col-md-12">
+
+                <table id="GridDataTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>AssignedProjectId</th>
+                            <th>Project Name</th>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Designation</th>
+                            <th>Status</th>
+                            <th>CreatedOn</th>
+                            <th>Action</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DatatablesCss.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_DatatablesScripts.cshtml")
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+      
+
+
+        $("#Project").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Administration/AssignProject/GetProjects",
+                    type: "GET",
+                    dataType: "json",
+                    data: { projectname: request.term },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.Text, value: item.Value };
+                            }));
+                    }
+                });
+            },
+            error: function (response) {
+                alert(response.responseText);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            select: function (e, i) {
+                $("#Project").val(i.item.label);
+                $("#hdnProjectId").val(i.item.value);
+
+                if ($("#hdnProjectId").val() != "")
+                {
+
+                    
+
+                    bindgrid();
+                   
+                }
+                return false;
+            },
+            minLength: 1
+        });
+
+        $("#User").autocomplete({
+            source: function (request, response) {
+                if ($("#RoleId").val() == "") {
+                    $.alert({
+                        title: 'Alert!',
+                        content: 'Please Select User Role!',
+                        type: 'red'
+                    });
+                    $("#User").val('');
+                }
+
+                $.ajax({
+                    url: "/Administration/AssignProject/GetUsernames",
+                    type: "GET",
+                    dataType: "json",
+                    data: { roleId: $("#RoleId").val(), username: request.term },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.Text, value: item.Value };
+                            }));
+                    }
+                });
+
+            },
+            error: function (response) {
+                alert(response.responseText);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            select: function (e, i) {
+                $("#User").val(i.item.label);
+                $("#hdnUserId").val(i.item.value);
+                return false;
+            },
+            minLength: 1
+        });
+
+
+        $("#btnsubmit").click(function ()
+        {
+            if ($("#hdnProjectId").val() == '')
+            {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select Project',
+                    type: 'red'
+                });
+            }
+            else if ($("#RoleId").val() == '')
+            {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select Role',
+                    type: 'red'
+                });
+            }
+            else if ($("#hdnUserId").val() == '')
+            {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select User',
+                    type: 'red'
+                });
+            } else {
+                SaveAssignProject();
+            }
+
+          
+        });
+
+        function SaveAssignProject() {
+            $.ajax({
+                type: "POST",
+                url: "/Administration/AssignProject/Process",
+                data:
+                {
+                    ProjectId: $("#hdnProjectId").val(),
+                    RoleId: $("#RoleId").val(),
+                    UserId: $("#hdnUserId").val()
+                },
+                success: function (data) {
+                    if (data.status == "Success") {
+                        $.confirm({
+                            title: 'Alert!',
+                            content: 'Project Assigned Successfully!',
+                            type: 'green',
+                            buttons: {
+                                OK: function () {
+                                    $("#RoleId").val('');
+                                    $("#hdnUserId").val('');
+                                    $("#User").val('');
+                                    $('#GridDataTable').DataTable().clear().draw();
+                                }
+                            }
+                        });
+
+
+                    } else if (data.status == "Validation") {
+                        $.alert({
+                            title: 'Alert!',
+                            content: 'Project Is Already Assigned to Select User!',
+                            type: 'red'
+                        });
+                    } else {
+                        alert('Records Not Updated');
+                    }
+
+                }
+            });
+        }
+
+
+
+
+
+        function bindgrid() {
+            if ($("#hdnProjectId").val() != "")
+            {
+               
+
+                $('#GridDataTable').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": true,
+                    "destroy":true,
+                    "ajax": {
+                        "url": "/Administration/AssignProject/GridAllAssignedProjects",
+                        "type": "POST",
+                        "datatype": "json",
+                        "data": {
+                            "projectId": $("#hdnProjectId").val()
+                        }
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": [0],
+                            "visible": false,
+                            "searchable": false
+                        }, {
+                            "targets": [1],
+                            "orderable": true,
+                            "searchable": true
+                        }, {
+                            "targets": [2],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [3],
+                            "orderable": false,
+                            "searchable": false
+                        }, {
+                            "targets": [4],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [5],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [6],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [7],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [8],
+                            "orderable": false,
+                            "searchable": false
+                        }
+                    ],
+                    "columns": [
+                        { "data": "AssignedProjectId", "name": "AssignedProjectId", "autoWidth": true },
+
+                        { "data": "ProjectName", "name": "ProjectName", "autoWidth": true },
+                        { "data": "UserName", "name": "UserName", "autoWidth": true },
+                        { "data": "RoleName", "name": "RoleName", "autoWidth": true },
+                        { "data": "Designation", "name": "Designation", "autoWidth": true },
+                        { "data": "Status", "name": "Status", "autoWidth": true },
+                        {
+                            "render": function (data, type, full, meta) {
+                                return moment(full.CreatedOn).format("YYYY-MM-DD HH:mm:ss");
+                            }
+                        },
+                        {
+                            "render": function (data, type, full, meta) {
+                                if (full.Status == "Active") {
+                                    return '<button class="btn btn-danger" onclick="UpdateStatus(' + full.AssignedProjectId + ',' + "'R'" + ')"><i class="fas fa-trash"></i> Remove Access</a>';
+                                }
+
+                                if (full.Status == "InActive") {
+                                    return '<button class="btn btn-success" onclick="UpdateStatus(' + full.AssignedProjectId + ',' + "'A'" + ')"><i class="fas fa-check-circle"></i> Grant Access </a>';
+                                }
+
+                            }
+                        },
+                        {
+                            "render": function (data, type, full, meta)
+                            {
+                                return '<button class="btn btn-default" onclick="Delete(' + full.AssignedProjectId + ',' + full.RoleId + ')">   <i class="fa fa-trash" aria-hidden="true"></i> </button> ';
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+
+        function UpdateStatus(assignedProjectId, accessType) {
+            if (assignedProjectId == "") {
+                $.alert('Something went wrong. Please Try Once Again After Sometime.');
+            } else {
+                $.confirm({
+                    title: 'Remove Project Access!',
+                    type: 'red',
+                    content: 'Do you want to Remove Project Access ?',
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                url: "/Administration/AssignProject/RemoveProjectAccess",
+                                type: "POST",
+                                data: { AssignedProjectId: assignedProjectId, AccessType: accessType },
+                                success: function (data, textStatus, xhr) {
+                                    if (data.Result == "success") {
+                                        $('#GridDataTable').DataTable().clear().draw();
+                                    }
+                                    if (data.Result == "failed") {
+                                        $.alert('Something Went Wrong');
+                                    }
+                                },
+                                error: function (xhr, status, err) {
+                                    if (xhr.status == 401) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                    if (xhr.status == 500) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                        }
+                    }
+                });
+            }
+
+
+        }
+
+        function Delete(assignedProjectId, roleId)
+        {
+            if (assignedProjectId == "" && roleId == "")
+            {
+                $.alert('Something went wrong. Please Try Once Again After Sometime.');
+            }
+            else
+            {
+                $.confirm({
+                    title: 'Delete!',
+                    type: 'red',
+                    content: 'Do you want to Delete Project Access ?',
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                url: "/Administration/AssignProject/DeleteProjectAccess",
+                                type: "POST",
+                                data: { AssignedProjectId: assignedProjectId, RoleId: roleId },
+                                success: function (data, textStatus, xhr)
+                                {
+                                    if (data.Result == "success")
+                                    {
+                                        $('#GridDataTable').DataTable().clear().draw();
+                                        $.alert(data.Message);
+                                    }
+                                    if (data.Result == "failed")
+                                    {
+                                        $.alert(data.Message);
+                                    }
+                                },
+                                error: function (xhr, status, err) {
+                                    if (xhr.status == 401) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                    if (xhr.status == 500) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                        }
+                    }
+                });
+            }
+
+
+        }
+    </script>
+}

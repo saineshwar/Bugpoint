@@ -1,0 +1,62 @@
+﻿@model BugPoint.ViewModel.Assigned.EditProjectComponentViewModel
+@{
+    ViewBag.PageName = "Component";
+    Layout = "_LayoutUser";
+}
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form autocomplete="off" asp-controller="Component" asp-antiforgery="true" asp-action="Edit" method="post">
+
+            <div class="card-body register-card-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ProjectId"></label>
+                        <select disabled="disabled" asp-for="ProjectId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofProjects, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="ProjectId"></span>
+                        <input asp-for="ProjectId" type="hidden" />
+                        <input asp-for="ProjectComponentId" type="hidden" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ComponentName"></label>
+                        <input asp-for="ComponentName" maxlength="100" placeholder="Enter Project Name" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ComponentName"></span>
+                        <input type="hidden" id="hdnProjectId" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ComponentDescription"></label>
+                        <textarea asp-for="ComponentDescription" class="form-control"></textarea>
+                        <span class="text-danger" asp-validation-for="ComponentDescription"></span>
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="AssignBugto"></label>
+                        <select disabled="disabled" asp-for="AssignBugto" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofUsers, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="AssignBugto"></span>
+                        <input asp-for="AssignBugto" type="hidden" />
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="Status" class="form-check-input" />
+                        <label class="form-check-label" asp-for="Status">Active</label>
+                        <span class="text-danger" asp-validation-for="Status"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" id="btnsubmit" class="btn btn-success">Save</button>
+                <a asp-area="" class="btn btn-danger" asp-controller="Component" asp-action="Add">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

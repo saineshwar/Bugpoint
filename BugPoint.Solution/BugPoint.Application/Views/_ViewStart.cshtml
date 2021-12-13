@@ -1,0 +1,40 @@
+﻿@using BugPoint.Common
+@using Microsoft.AspNetCore.Http
+
+
+@if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.Developer))
+{
+    Layout = "_LayoutUser";
+}
+else if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.DeveloperTeamLead))
+{
+    Layout = "_LayoutUser";
+}
+else if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.Tester))
+{
+    Layout = "_LayoutReporter";
+}
+else if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.TesterTeamLead))
+{
+    Layout = "_LayoutReporter";
+}
+else if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.Admin))
+{
+    Layout = "_LayoutUser";
+}
+else if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.ProjectManager))
+{
+    Layout = "_LayoutUser";
+}
+else if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.SuperAdmin))
+{
+    Layout = "_LayoutAdministration";
+}
+else if (Context.Session.GetInt32("Portal.RoleId") == Convert.ToInt32(RolesHelper.Roles.Reporter))
+{
+    Layout = "_LayoutReporter";
+}
+else
+{
+    Layout = "_Layout";
+}

@@ -1,0 +1,865 @@
+﻿@using BugPoint.Common
+@model BugPoint.ViewModel.BugsList.DisplayBugUserViewModel
+@{
+    Layout = "_LayoutUser";
+    ViewBag.PageName = "Bug Details";
+}
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-bug"></i>
+                    Bug View
+                </h3>
+                <div class="card-tools">
+                    <div class="btn-group">
+                        <button type="button" disabled="disabled" class="btn btn-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bars"></i>
+                        </button>
+
+                    </div>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+
+            <div class="card-body" style="display: block;">
+
+                <input type="hidden" asp-for="BugDetailViewModel.BugId" />
+                <input type="hidden" asp-for="BugDetailViewModel.ProjectId" />
+                <div class="form-row">
+                    <div class="form-group col-md-9">
+                        <label asp-for="@Model.BugDetailViewModel.Summary"></label>
+                        <h5> @Model.BugDetailViewModel.Summary</h5>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="@Model.BugDetailViewModel.ProjectComponent"></label><br />
+                        @Model.BugDetailViewModel.ProjectComponent
+                    </div>
+                </div>
+                <hr />
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Priority"></label><br />
+                       
+                        
+                        @if (Model.BugDetailViewModel.Priority == "Urgent")
+                        {
+                            <button type="button" class="btn btn-Urgent btn-sm">@Model.BugDetailViewModel.Priority</button>
+
+                        }
+                        else if (Model.BugDetailViewModel.Priority == "High")
+                        {
+                            <button type="button" class="btn btn-High btn-sm">@Model.BugDetailViewModel.Priority</button>
+
+                        }
+                        else if (Model.BugDetailViewModel.Priority == "Medium")
+                        {
+                            <button type="button" class="btn btn-Medium btn-sm">@Model.BugDetailViewModel.Priority</button>
+
+                        }
+                        else if (Model.BugDetailViewModel.Priority == "Low")
+                        {
+                            <button type="button" class="btn btn-Low btn-sm">@Model.BugDetailViewModel.Priority</button>
+                        }
+                        
+
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Severity"></label><br />
+                        @Model.BugDetailViewModel.Severity
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Version"></label><br />
+                        @Model.BugDetailViewModel.Version
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Hardware"></label><br />
+                        @Model.BugDetailViewModel.Hardware
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.BrowserName"></label><br />
+                        @Model.BugDetailViewModel.BrowserName
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.OperatingSystemName"></label><br />
+                        @Model.BugDetailViewModel.OperatingSystemName
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.WebFramework"></label><br />
+                        @Model.BugDetailViewModel.WebFramework
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.TestedOn"></label><br />
+                        @Model.BugDetailViewModel.TestedOn
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.BugTypeOn"></label><br />
+                        @Model.BugDetailViewModel.BugTypeOn
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.AssignedTo"></label><br />
+                        @Model.BugDetailViewModel.AssignedTo
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.StatusName"></label><br />
+
+
+                        @if (Model.BugDetailViewModel.StatusId == 1)
+                        {
+                            <button type="button" class="btn btn-Newx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 2)
+                        {
+                            <button type="button" class="btn btn-Confirmedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 3)
+                        {
+                            <button type="button" class="btn btn-InProgressx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 4)
+                        {
+                            <button type="button" class="btn btn-ReOpenedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 5)
+                        {
+                            <button type="button" class="btn btn-Resolvedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 6)
+                        {
+                            <button type="button" class="btn btn-InTestingx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 7)
+                        {
+                            <button type="button" class="btn btn-Closedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 8)
+                        {
+                            <button type="button" class="btn btn-OnHoldx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 9)
+                        {
+                            <button type="button" class="btn btn-Rejectedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 10)
+                        {
+                            <button type="button" class="btn btn-Replyx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 11)
+                        {
+                            <button type="button" class="btn btn-Duplicatex btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 12)
+                        {
+                            <button type="button" class="btn btn-UnConfirmedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+
+                    </div>
+
+
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Resolution"></label><br />
+                        <button type="button" class="btn btn-lightgreenglowx btn-sm">@Model.BugDetailViewModel.Resolution</button>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="@Model.BugDetailViewModel.Description"></label>
+                        <p>
+                            @Html.Raw(Model.BugDetailViewModel.Description)
+                        </p>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="@Model.BugDetailViewModel.Urls"></label>
+                        <p>
+                            @Model.BugDetailViewModel.Urls
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+
+        @if (Model.ViewBugReplyMainModel.ListofTicketreply.Any())
+        {
+            @await Html.PartialAsync("_BugReplyHistoryUser", Model.ViewBugReplyMainModel)
+        }
+
+        @if (Model.BugReplyViewModel != null)
+        {
+            if (Model.BugDetailViewModel.StatusId != (int)StatusHelper.Status.CLOSED)
+            {
+                @await Html.PartialAsync("_BugReplyUser", Model.BugReplyViewModel)
+            }
+            else
+            {
+                <div class="alert alert-success">
+                    <strong>Message!</strong> This Bug is Closed.
+                </div>
+            }
+
+        }
+    </div>
+    <div class="col-md-3">
+        <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-info-circle"></i> Quick Information</h3>
+            </div>
+            <div class="card-body">
+
+                <span>
+                    <label>BugID : </label> @Model.BugDetailViewModel.BugId
+                </span>
+                <br />
+                <span>
+                    <label asp-for="@Model.BugDetailViewModel.CreatedBy"></label>
+                    : @Model.BugDetailViewModel.CreatedBy
+                </span>
+                <br />
+                <span>
+                    <label asp-for="@Model.BugDetailViewModel.CreatedOn"></label>
+                    : @Model.BugDetailViewModel.CreatedOn
+                </span>
+            </div>
+        </div>
+        @if ((int)ViewBag.Currentrole == (int)RolesHelper.Roles.DeveloperTeamLead || Model.BugDetailViewModel.DesignationId == (int)DesignationHelper.Designation.Developer_Support)
+        {
+        <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-wrench"></i> Quick Changes
+                </h3>
+            </div>
+            <div class="card-body">
+                @if (Model.ExpressChangesViewModel != null)
+                {
+                    
+                        @await Html.PartialAsync("_ExpressChangesPartialUser", Model.ExpressChangesViewModel)    
+                    
+                    
+                }
+            </div>
+        </div>
+        }
+        <div class="card card-secondary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-paperclip"></i> Attachments</h3>
+            </div>
+            <div class="card-body">
+                @if (Model.ListofAttachments != null)
+                {
+                    if (Model.ListofAttachments.Any())
+                    {
+                        @await Html.PartialAsync("_BugAttachmentUser", Model)
+                    }
+                    else
+                    {
+                        <span>No Attachments</span>
+                    }
+                }
+                else
+                {
+                    <span>No Attachments</span>
+                }
+            </div>
+        </div>
+
+        <div class="card card-info card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-history"></i> Bug History</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group col-md-6">
+                    <button type="button" id="btnActivites" class="btn btn-block btn-outline-info">
+                        <i class="fas fa-history"></i> Show Activites
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-lg" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+
+                    <i class="fas fa-history"></i> Activites
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div id="Tickethistory" style="height:600px;overflow-y:auto;" class="modal-body">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<script src="~/js/ckeditor/ckeditor.js"></script>
+<script asp-append-version="true" src="~/Scripts/custom/validate.file.js"></script>
+<script>
+
+    @if (Model.BugDetailViewModel.StatusId != (int)StatusHelper.Status.CLOSED)
+    {
+        <text>
+    CKEDITOR.replace('Description', { htmlEncodeOutput: true });
+        </text>
+    }
+
+
+    $("#btnreply").click(function () {
+        $.confirm({
+            title: 'Confirmation!',
+            content: 'Do you want to Reply on Bug?',
+            type: 'green',
+            buttons:
+            {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-green',
+                    action: function () {
+                        data();
+                        return true;
+                    },
+                    cancel: function () {
+                        $.alert('Canceled!');
+                    }
+                },
+                close: function () {
+                }
+            }
+        });
+
+    });
+
+
+    $("#btnreopenbug").click(function () {
+        $.confirm({
+            title: 'Confirmation!',
+            content: 'Do you want to ReOpen this Bug again?',
+            type: 'green',
+            buttons:
+            {
+                confirm: {
+                    text: 'Yes',
+                    btnClass: 'btn-green',
+                    action: function () {
+
+                        var jsonObject =
+                        {
+                            BugId: $("#BugDetailViewModel_BugId").val()
+                        };
+                        $("#loader").show();
+                        $.ajax({
+                            type: "POST",
+                            url: "/MyBugDetails/ChangeStatus",
+                            dataType: "json",
+                            data: jsonObject,
+
+                            success: function (data, textStatus, xhr)
+                            {
+                                location.reload();
+                            },
+                            error: function (xhr, status, err) {
+                                if (xhr.status == 400) {
+                                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                                }
+                            }
+                        });
+
+                        return true;
+                    },
+                    cancel: function () {
+                        $.alert('Canceled!');
+                    }
+                },
+                close: function () {
+                    location.reload();
+                }
+            }
+        });
+
+    });
+
+    function data() {
+        var textboxData = CKEDITOR.instances.Description.getData();
+        if (textboxData === '') {
+            $.alert({
+                title: 'Validation!',
+                content: 'Enter Bug Description.',
+                type: 'red'
+            });
+        }
+        else if ($("#StatusId").val() === '')
+        {
+            $.alert({
+                title: 'Validation!',
+                content: 'Select Reply Status',
+                type: 'red'
+            });
+        }
+        else if ($("#StatusId").val() === '5' && $("#ResolutionId").val() === '') {
+            $.alert({
+                title: 'Validation!',
+                content: 'Select Resolution Type',
+                type: 'red'
+            });
+        }
+        else
+        {
+
+
+            var desc = CKEDITOR.instances['Description'].getData();
+            var formData = new FormData();
+            formData.append('file1', $('#file1')[0].files[0]);
+            formData.append('file2', $('#file2')[0].files[0]);
+            formData.append('file3', $('#file3')[0].files[0]);
+            formData.append('Description', desc);
+            formData.append('BugId', $("#BugDetailViewModel_BugId").val());
+            formData.append('StatusId', $("#StatusId").val());
+            formData.append('ResolutionId', $("#ResolutionId").val());
+
+            $("#loader").show();
+            $.ajax({
+                type: "POST",
+                url: "/MyBugDetails/Details",
+                contentType: false,
+                processData: false,
+                data: formData,
+                dataType: "json",
+                success: function (data, textStatus, xhr) {
+                    if (data.Result == "success") {
+                        location.reload();
+                    } else {
+                        alert(data.Message);
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 401) {
+                        alert('Error');
+                        window.location.href = "/Portal/Logout";
+                    }
+
+                    if (xhr.status == 500) {
+                        alert('Error');
+                        window.location.href = "/Portal/Logout";
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $("#ResolutionId").hide();
+        $("#lblResolution").hide();
+
+        $("#PriorityId").change(function () {
+            $.confirm({
+                title: 'Confirmation!',
+                content: 'Are you sure you want to change Priority this?',
+                type: 'green',
+                buttons:
+                {
+                    confirm: {
+                        text: 'Yes',
+                        btnClass: 'btn-green',
+                        action: function () {
+                            if ($("#PriorityId").val() != "") {
+                                var jsonObject =
+                                {
+                                    BugId: $("#BugDetailViewModel_BugId").val(),
+                                    PriorityId: $("#PriorityId").val()
+                                };
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/MyBugDetails/ChangePriority",
+                                    dataType: "json",
+                                    data: jsonObject,
+                                    success: function (data, textStatus, xhr) {
+                                        $.confirm({
+                                            title: 'Message!',
+                                            content: 'Bug Priority Updated Successfully',
+                                            type: 'blue',
+                                            buttons:
+                                            {
+                                                confirm: {
+                                                    text: 'OK',
+                                                    btnClass: 'btn-blue',
+                                                    action: function () {
+                                                        location.reload();
+                                                    },
+                                                    cancel: function () {
+                                                        $.alert('Canceled!');
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    },
+                                    error: function (xhr, status, err) {
+                                        if (xhr.status == 400) {
+                                            DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                                        }
+                                    }
+                                });
+                            }
+                            return true;
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                        }
+                    },
+                    close: function () {
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        $("#AssignedToId").change(function () {
+            $.confirm({
+                title: 'Confirmation!',
+                content: 'Are you sure you want to change Assigned Developer ?',
+                type: 'green',
+                buttons:
+                {
+                    confirm: {
+                        text: 'Yes',
+                        btnClass: 'btn-green',
+                        action: function ()
+                        {
+                            if ($("#AssignedToId").val() != "")
+                            {
+                                var jsonObject =
+                                {
+                                    UserId: $("#AssignedToId").val(),
+                                    BugId: $("#BugDetailViewModel_BugId").val()
+                                };
+                                if ($("#AssignedToId").val() == '') {
+                                    alert('You Cannot set this status!');
+                                    location.reload();
+
+                                } else {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/MyBugDetails/ChangeAssignedTo",
+                                        dataType: "json",
+                                        data: jsonObject,
+
+                                        success: function (data, textStatus, xhr) {
+                                            $.alert("Status Updated Successfully");
+                                            location.reload();
+                                        },
+                                        error: function (xhr, status, err) {
+                                            if (xhr.status == 400) {
+                                                DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                        }
+                    },
+                    close: function () {
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        $("#StatusId").change(function ()
+        {
+            var selectedval = $("#StatusId").val();
+
+            if (selectedval == "5") {
+                $("#ResolutionId").show();
+                $("#lblResolution").show();
+            } else {
+                $("#ResolutionId").val('');
+                $("#ResolutionId").hide();
+                $("#lblResolution").hide();
+            }
+
+        });
+
+       
+
+    });
+
+
+    function downloadAttachment(bugId, attachmentsId)
+    {
+        $.confirm({
+            title: 'Confirmation!',
+            content: 'Do you want to Download Attachment?',
+            type: 'blue',
+            buttons:
+            {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-blue',
+                    action: function ()
+                    {
+                        window.location = "/MyBugDetails/DownloadAttachMent?attachmentId=" + attachmentsId + "&bugId=" + bugId;
+                    },
+                    cancel: function () {
+                        $.alert('Canceled!');
+                    }
+                },
+                close: function () {
+                }
+            }
+        });
+
+    }
+
+    function downloadReplyAttachment(bugId, attachmentsId)
+    {
+        $.confirm({
+            title: 'Confirmation!',
+            content: 'Do you want to Download Attachment?',
+            type: 'blue',
+            buttons:
+            {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-blue',
+                    action: function ()
+                    {
+                        window.location = "/MyBugDetails/DownloadReplyAttachment?attachmentId=" + attachmentsId + "&bugId=" + bugId;
+                    },
+                    cancel: function () {
+                        $.alert('Canceled!');
+                    }
+                },
+                close: function () {
+                }
+            }
+        });
+    }
+
+    function deleteAttachment(attachmentsId, bugId) {
+        $.confirm({
+            title: 'Confirmation!',
+            type: 'red',
+            content: 'Do you want to Delete Attachment ?',
+            buttons: {
+                confirm: function () {
+                    if (attachmentsId != "") {
+                        var jsonObject =
+                        {
+                            attachmentsId: attachmentsId,
+                            bugId: bugId
+                        };
+                        $("#loader").show();
+                        $.ajax({
+                            type: "POST",
+                            url: "/MyBugDetails/DeleteReplyAttachment",
+                            dataType: "json",
+                            data: jsonObject,
+                            success: function (data, textStatus, xhr)
+                            {
+                                if (data.Status === true)
+                                {
+                                    $.alert("Attachment Deleted Successfully");
+                                    location.reload();
+                                } else
+                                {
+                                    $.alert("Something Went Wrong While Deleting Attachment Please Try Again after Sometime!");
+                                    $("#loader").hide();
+                                }
+
+                            },
+                            error: function (xhr, status, err) {
+                                if (xhr.status == 400) {
+                                    DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                                }
+                            }
+                        });
+                    }
+                },
+                cancel: function () {
+                    $.alert('Canceled!');
+                }
+            }
+        });
+
+
+    }
+
+    $("#btnActivites").click(function () {
+
+        if ($("#BugDetailViewModel_BugId").val() != "")
+        {
+            var jsonObject =
+            {
+                BugId: $("#BugDetailViewModel_BugId").val()
+            };
+
+            $("#loader").show();
+            $.ajax({
+                type: "POST",
+                url: "/MyBugDetails/GetBugActivities",
+                dataType: "html",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr)
+                {
+                    if (data.length != 0) {
+
+                        $("#Tickethistory").html(data);
+                        $("#loader").hide();
+                        $("#modal-lg").modal('show');
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+    });
+
+    $("#btnAssignsubmit").click(function ()
+    {
+
+        if ($("#BugDetailViewModel_BugId").val() == "")
+        {
+
+            $.alert('Something Went Wrong Please Refresh Page.');
+        }
+        else if ($("#RequestedUserId").val() == "")
+        {
+            $.alert('Please Select User');
+        }
+        else
+        {
+            var jsonObject =
+            {
+                BugId: $("#BugDetailViewModel_BugId").val(),
+                UserId: $("#RequestedUserId").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/MyBugDetails/ChangeAssignedTo",
+                dataType: "json",
+                data: jsonObject,
+
+                success: function(data, textStatus, xhr) {
+                    if (data == true)
+                    {
+                        $.confirm({
+                            title: 'Message!',
+                            content: 'Bug is Assigned to New User Successfully?',
+                            type: 'green',
+                            buttons:
+                            {
+                                ok: {
+                                    text: 'OK',
+                                    btnClass: 'btn-green',
+                                    action: function ()
+                                    {
+                                        location.reload();
+                                    },
+                                    cancel: function ()
+                                    {
+                                        $.alert('Canceled!');
+                                    }
+                                }
+                            }
+                        });
+
+                    
+                    }
+                },
+                error: function(xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        } 
+    });
+
+    function DisplayModelStateErrors(modelState) {
+        var message = "";
+        var propStrings = Object.keys(modelState);
+
+        $.each(propStrings, function (i, propString) {
+            var propErrors = modelState[propString];
+            $.each(propErrors, function (j, propError) {
+                message += propError;
+            });
+            message += "\n";
+        });
+
+        alert(message);
+    };
+
+</script>
+
+
+@section Scripts
+{
+    <script>
+        $("#RequestforSolution").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/MyBugDetails/GetDeveloperList",
+                    type: "GET",
+                    dataType: "json",
+                    data: { username: request.term, ProjectId: $("#BugDetailViewModel_ProjectId").val()},
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.CustomName, value: item.UserId };
+                            }));
+                    }
+                });
+            },
+            error: function (response) {
+                alert(response.responseText);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            select: function (e, i)
+            {
+                $("#RequestforSolution").val(i.item.label);
+                $("#RequestedUserId").val(i.item.value);
+                return false;
+            },
+            minLength: 1
+        });
+    </script>
+}

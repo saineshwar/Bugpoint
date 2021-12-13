@@ -1,0 +1,26 @@
+﻿@model BugPoint.ViewModel.BugsList.DisplayBugViewModel
+
+
+
+@if (Model != null)
+{
+    if (Model.ListofAttachments.Any())
+    {
+        foreach (var data in Model.ListofAttachments)
+        {
+            <p>
+                <a data-toggle="tooltip"
+                   data-placement="top"
+                   title="Download"
+                   class="link-black text-md"
+                   onclick="downloadAttachment('@data.BugId', '@data.AttachmentId')" href="javascript:void(0);"><i class="fas fa-link mr-1"></i> @data.OriginalAttachmentName</a>
+
+
+            </p>
+        }
+    }
+    else
+    {
+        <p> No Attachments</p>
+    }
+}

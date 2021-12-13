@@ -1,0 +1,843 @@
+﻿@model BugPoint.ViewModel.Charts.DeveloperTeamLeadChartTableViewModel
+@{
+    ViewBag.PageName = "Dashboard";
+    Layout = "_LayoutUser";
+}
+
+<link href="~/plugins/chart.js/Chart.css" rel="stylesheet" />
+<script src="~/plugins/chart.js/Chart.min.js"></script>
+
+<div class="row">
+    <div class="col-md-6">
+        <select asp-for="ProjectId" class="form-control"
+                asp-items="@(new SelectList(Model.ListofProjects, "Value", "Text"))">
+        </select>
+        <hr />
+    </div>
+    <div class="col-md-6">
+        <form autocomplete="off" asp-controller="BugSearch" asp-antiforgery="true" id="bugform"  asp-action="Search" method="post">
+            <div class="form-row">
+                <div class="col-md-8">
+                    <input asp-for="BugIdSearch" type="text" onkeypress="return onlyNumbers(event);" maxlength="6" placeholder="Enter BugId to Search" class="form-control" />
+                    <span class="text-danger" asp-validation-for="BugIdSearch"></span>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" id="btnsubmit" class="btn btn-default"> <i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+        </form>
+        <hr />
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="far fa-envelope-open"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Open</span>
+                <span id="OpenSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-clipboard-check"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Confirmed</span>
+                <span id="ConfirmedSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-circle-notch"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">In-Progress</span>
+                <span id="InProgressSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="far fa-folder-open"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Re-Opened</span>
+                <span id="ReOpenedSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-check-circle"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Resolved</span>
+                <span id="ResolvedSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-vials"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">In-Testing</span>
+                <span id="InTestingSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-times-circle"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Closed</span>
+                <span id="ClosedSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-pause-circle"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">On-Hold</span>
+                <span id="OnHoldSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-times"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Rejected</span>
+                <span id="OnRejectedSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-comment-dots"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Reply</span>
+                <span id="OnReplySpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-copy"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Duplicate</span>
+                <span id="DuplicateSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-12 col-sm-6 col-md-2">
+        <div class="info-box">
+            <span class="info-box-icon bg-black elevation-1"><i class="fas fa-not-equal"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">UnConfirmed</span>
+                <span id="UnConfirmedSpan" class="info-box-number">
+
+
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-default">
+            <div class="card-header">
+
+
+                <h3 class="card-title"><strong>Teams Bugs Status</strong></h3>
+
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadTeamsStatusData"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-default">
+            <div class="card-header">
+
+                <h3 class="card-title">
+                    <strong>
+                        <i class="fa fa-star" style="color: gold" aria-hidden="true"></i>
+                        Star Bug Hunter
+                        
+                    </strong>
+                </h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div id="loadstartperformer"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-md-6">
+
+
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Bug Status</strong></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div id="Piecanvascontaniner" class="card-body">
+                <canvas id="Piecanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Bug Priority</strong></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div id="PiePriorityCanvascontainer" class="card-body">
+                <canvas id="PiePriorityCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Open and Close Bug</strong></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div id="DoughnutOpenCloseCanvascontainer" class="card-body">
+                <canvas id="DoughnutOpenCloseCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Browser</strong></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div id="Browsercanvascontaniner" class="card-body">
+                <canvas id="Browsercanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="row">
+        <div class="col-md-4">
+            <div class="card card-default">
+                <div class="card-header">
+                    
+                       
+                            <h3 class="card-title"><strong>Severity</strong></h3>
+                      
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+
+                        </div>
+                  
+                </div>
+                <div class="card-body">
+
+
+
+                    <div id="loadStatusData"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-default">
+                <div class="card-header">
+                   
+                      
+                            <h3 class="card-title"><strong>BugTypes</strong></h3>
+                       
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+
+                      
+                    </div>
+                </div>
+                <div class="card-body">
+
+
+
+                    <div id="loadBugTypesData"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-default">
+                <div class="card-header">
+                    
+                        
+                            <h3 class="card-title"><strong>Tested On Environment</strong></h3>
+                     
+                       
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+
+                       
+                    </div>
+                </div>
+                <div class="card-body">
+
+
+
+                    <div id="loadTestedEnvironmentdata"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        $(document).ready(function () {
+            $("#loader").show();
+            bindpiedata();
+            binddata();
+            bindPiePriorityCharttdata();
+            bindPieOpenClosedCharttdata();
+            bindCounts();
+            bindpiebrowserdata();
+            $("#loader").hide();
+            $("#ProjectId").change(function () {
+                if ($("#ProjectId").val() == "") {
+                    $.alert({
+                        title: 'Validation!',
+                        content: 'Please Choose Project.',
+                        type: 'red'
+                    });
+                } else {
+                    $("#loader").show();
+                    bindpiedata();
+                    bindPiePriorityCharttdata();
+                    bindPieOpenClosedCharttdata();
+                    binddata();
+                    bindCounts();
+                    bindpiebrowserdata();
+                    $("#loader").hide();
+                }
+            });
+        });
+
+        function binddata() {
+            var jsonObject =
+            {
+                ProjectId: $("#ProjectId").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetLeadSeveritywiseCount",
+                dataType: "html",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $("#loadStatusData").empty();
+                        $("#loadStatusData").html(data);
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetLeadBugTypeProjectwiseCount",
+                dataType: "html",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $("#loadBugTypesData").empty();
+                        $("#loadBugTypesData").html(data);
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetLeadTestedEnvironmentProjectwiseCount",
+                dataType: "html",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $("#loadTestedEnvironmentdata").empty();
+                        $("#loadTestedEnvironmentdata").html(data);
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetDeveloperTeamsBugsCount",
+                dataType: "html",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $("#loadTeamsStatusData").empty();
+                        $("#loadTeamsStatusData").html(data);
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetStarDeveloperCount",
+                dataType: "html",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr)
+                {
+                    if (data.length != 0)
+                    {
+                        $("#loadstartperformer").empty();
+                        $("#loadstartperformer").html(data);
+                    }
+                },
+                error: function (xhr, status, err)
+                {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+        function bindpiedata() {
+            var jsonObject =
+            {
+                ProjectId: $("#ProjectId").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetPieChartTeamLeadData",
+                dataType: "json",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $('#Piecanvas').remove();
+                        $('#Piecanvascontaniner').append('<canvas id="Piecanvas"><canvas>');
+
+
+                        var ctx1 = document.getElementById("Piecanvas").getContext("2d");
+                        window.myBar = new Chart(ctx1,
+                            {
+                                type: 'pie',
+                                data: data,
+                                options:
+                                {
+                                    title:
+                                    {
+                                        display: true,
+                                        text: "Bug Status"
+                                    },
+                                    responsive: true,
+                                    maintainAspectRatio: true
+                                }
+                            });
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+        function bindbarChartdata() {
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetBarChart",
+                dataType: "json",
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+
+
+                        var ctx4 = document.getElementById("barcanvas").getContext("2d");
+                        window.myBar = new Chart(ctx4,
+                            {
+                                type: 'bar',
+                                data: data,
+                                options:
+                                {
+                                    responsive: true,
+                                    maintainAspectRatio: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+        function bindPiePriorityCharttdata() {
+            var jsonObject =
+            {
+                ProjectId: $("#ProjectId").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetPriorityChartTeamLeadData",
+                dataType: "json",
+                data: jsonObject,
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $('#PiePriorityCanvas').remove();
+                        $('#PiePriorityCanvascontainer').append('<canvas id="PiePriorityCanvas"><canvas>');
+
+
+                        var ctx2 = document.getElementById("PiePriorityCanvas").getContext("2d");
+                        window.myBar = new Chart(ctx2,
+                            {
+                                type: 'doughnut',
+                                data: data,
+                                options:
+                                {
+                                    title:
+                                    {
+                                        display: true,
+                                        text: "Bug Priority"
+                                    },
+                                    responsive: true,
+                                    maintainAspectRatio: true
+                                }
+                            });
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+        function bindPieOpenClosedCharttdata() {
+            var jsonObject =
+            {
+                ProjectId: $("#ProjectId").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetPieOpenCloseChartTeamLeadData",
+                dataType: "json",
+                data: jsonObject,
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+
+                        $('#DoughnutOpenCloseCanvas').remove();
+                        $('#DoughnutOpenCloseCanvascontainer').append('<canvas id="DoughnutOpenCloseCanvas"><canvas>');
+
+                        var ctx3 = document.getElementById("DoughnutOpenCloseCanvas").getContext("2d");
+                        window.myBar = new Chart(ctx3,
+                            {
+                                type: 'pie',
+                                data: data,
+                                options:
+                                {
+                                    title:
+                                    {
+                                        display: true,
+                                        text: "Bug Count"
+                                    },
+                                    responsive: true,
+                                    maintainAspectRatio: true
+                                }
+                            });
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+        function bindCounts() {
+            var jsonObject =
+            {
+                ProjectId: $("#ProjectId").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetStatusWiseBugsCountLead",
+                dataType: "json",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $("#OpenSpan").empty();
+                        $("#ConfirmedSpan").empty();
+                        $("#InProgressSpan").empty();
+                        $("#ReOpenedSpan").empty();
+                        $("#ResolvedSpan").empty();
+                        $("#InTestingSpan").empty();
+                        $("#ClosedSpan").empty();
+                        $("#OnHoldSpan").empty();
+                        $("#OnRejectedSpan").empty();
+                        $("#OnReplySpan").empty();
+                        $("#DuplicateSpan").empty();
+                        $("#UnConfirmedSpan").empty();
+
+                        $("#OpenSpan").html(data[0].OpenCount);
+                        $("#ConfirmedSpan").html(data[0].ConfirmedCount);
+                        $("#InProgressSpan").html(data[0].InProgressCount);
+                        $("#ReOpenedSpan").html(data[0].ReOpenedCount);
+                        $("#ResolvedSpan").html(data[0].ResolvedCount);
+                        $("#InTestingSpan").html(data[0].InTestingCount);
+                        $("#ClosedSpan").html(data[0].ClosedCount);
+                        $("#OnHoldSpan").html(data[0].OnHoldCount);
+                        $("#OnRejectedSpan").html(data[0].RejectedCount);
+                        $("#OnReplySpan").html(data[0].ReplyCount);
+                        $("#DuplicateSpan").html(data[0].DuplicateCount);
+                        $("#UnConfirmedSpan").html(data[0].UnConfirmedCount);
+
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+        function bindpiebrowserdata()
+        {
+            var jsonObject =
+            {
+                ProjectId: $("#ProjectId").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Dashboard/GetBrowserChartTeamLeadData",
+                dataType: "json",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    if (data.length != 0) {
+                        $('#Browsercanvas').remove();
+                        $('#Browsercanvascontaniner').append('<canvas id="Browsercanvas"><canvas>');
+
+
+                        var ctx1 = document.getElementById("Browsercanvas").getContext("2d");
+                        window.myBar = new Chart(ctx1,
+                            {
+                                type: 'pie',
+                                data: data,
+                                options:
+                                {
+                                    title:
+                                    {
+                                        display: true,
+                                        text: ""
+                                    },
+                                    responsive: true,
+                                    maintainAspectRatio: true
+                                }
+                            });
+                    }
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+
+        function DisplayModelStateErrors(modelState) {
+            var message = "";
+            var propStrings = Object.keys(modelState);
+
+            $.each(propStrings, function (i, propString) {
+                var propErrors = modelState[propString];
+                $.each(propErrors, function (j, propError) {
+                    message += propError;
+                });
+                message += "\n";
+            });
+
+            alert(message);
+        };
+    </script>

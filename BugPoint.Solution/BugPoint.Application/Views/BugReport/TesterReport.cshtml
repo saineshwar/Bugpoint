@@ -1,0 +1,156 @@
+﻿@model BugPoint.ViewModel.Reports.ExportReportViewModel
+
+@{
+    ViewBag.PageName = "Reports";
+}
+
+<form autocomplete="off" asp-controller="BugReport" id="frmSearch" enctype="multipart/form-data" asp-action="TesterReport" method="post">
+
+    <div class="card card-secondary card-outline">
+        <div class="card-header">
+            <h3 class="card-title"> <i class="fas fa-file-excel"></i></h3>
+        </div>
+        <div class="card-body register-card-body">
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label class="mandatory" asp-for="ProjectId"></label>
+                    <select asp-for="ProjectId" class="form-control"
+                            asp-items="@(new SelectList(Model.ListofProjects, "Value", "Text"))">
+                    </select>
+                    <span class="text-danger" asp-validation-for="ProjectId"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="mandatory" asp-for="ReportsId"></label>
+                    <select asp-for="ReportsId" class="form-control"
+                            asp-items="@(new SelectList(Model.ListofReportType, "Value", "Text"))">
+                    </select>
+                    <span class="text-danger" asp-validation-for="ReportsId"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="mandatory" class="mandatory" asp-for="Fromdate"></label>
+                    <input asp-for="Fromdate" onkeypress="return false;" placeholder="Select From Date" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Fromdate"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="mandatory" asp-for="Todate"></label>
+                    <input asp-for="Todate" onkeypress="return false;" placeholder="Select To Date" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Todate"></span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input id="btnsubmit" class="btn btn-success" type="button" value="Download" />
+            <a asp-area="" class="btn btn-primary" asp-controller="BugReport" asp-action="TesterReport">Clear</a>
+        </div>
+    </div>
+
+</form>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        if ($("#Fromdate").val() == "") {
+            $('#Fromdate').prop('disabled', true);
+        }
+
+        if ($("#Todate").val() == "") {
+            $('#Todate').prop('disabled', true);
+        }
+
+        $("#Fromdate").datepicker
+            ({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                numberOfMonths: 1,
+                changeYear: true,
+                yearRange: new Date().getFullYear() + ':' + new Date().getFullYear(),
+                onSelect: function (date) {
+                    $('#Todate').prop('disabled', false);
+                    var dt2 = $('#Todate');
+                    var startDate = $(this).datepicker('getDate');
+                    var minDate = $(this).datepicker('getDate');
+                    dt2.datepicker('setDate', minDate);
+                    startDate.setDate(startDate.getDate() + 180);
+                    //sets dt2 maxDate to the last day of 30 days window
+                    dt2.datepicker('option', 'maxDate', startDate);
+                    dt2.datepicker('option', 'minDate', minDate);
+                    $(this).datepicker('option', 'minDate', minDate);
+                }
+            });
+        $("#Todate").datepicker
+            ({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                numberOfMonths: 1,
+                yearRange: new Date().getFullYear() + ':' + new Date().getFullYear(),
+                onSelect: function (date) {
+                }
+            });
+
+        $("#ReportsId").change(function ()
+        {
+            $("#loader").show();
+
+            if ($("#ReportsId").val() == "3") {
+                $('#Fromdate').prop('disabled', false);
+                $('#Todate').prop('disabled', false);
+            }
+            else if ($("#ReportsId").val() == "4") {
+                $('#Fromdate').prop('disabled', false);
+                $('#Todate').prop('disabled', false);
+            }
+            else if ($("#ReportsId").val() == "5") {
+                $('#Fromdate').prop('disabled', true);
+                $('#Todate').prop('disabled', true);
+            }
+            else {
+                $('#Fromdate').prop('disabled', true);
+                $('#Todate').prop('disabled', true);
+            }
+
+            $("#loader").hide();
+        });
+
+        $("#btnsubmit").click(function () {
+            if ($("#ReportsId").val() == "3" && $("#Fromdate").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Please Select From Date',
+                    type: 'red'
+                });
+                return;
+            }
+            else if ($("#ReportsId").val() == "3" && $("#Fromdate").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Please Please Select To Date',
+                    type: 'red'
+                });
+                return;
+            }
+            if ($("#ReportsId").val() == "4" && $("#Fromdate").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Please Select From Date',
+                    type: 'red'
+                });
+                return;
+            }
+            else if ($("#ReportsId").val() == "4" && $("#Fromdate").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Please Please Select To Date',
+                    type: 'red'
+                });
+                return;
+            }
+            $("#frmSearch").submit();
+
+        });
+
+    });
+</script>

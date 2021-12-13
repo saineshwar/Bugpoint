@@ -1,0 +1,141 @@
+﻿
+@{
+    ViewBag.PageName = "Project";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DatatablesCss.cshtml")
+
+
+<div class="col-md-12">
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">All</h3>
+        </div>
+        <div class="card-body">
+            <table id="GridDataTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ProjectId</th>
+                        <th>Project Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>CreatedOn</th>
+                        <th>Edit</th>
+
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@await Html.PartialAsync("~/Views/Shared/_DatatablesScripts.cshtml")
+@Html.Hidden("item-to-delete", "", new { @id = "item-to-delete" })
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#GridDataTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "filter": true,
+                "order": [[ 0, "desc" ]],
+                "ajax": {
+                    "url": "/Administration/Project/GridAllProjects",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    }, {
+                        "targets": [2],
+                        "orderable": false,
+                        "searchable": false
+                    }, {
+                        "targets": [3],
+                        "orderable": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [4],
+                        "orderable": false,
+                        "searchable": false
+                    }, {
+                        "targets": [5],
+                        "orderable": false,
+                        "searchable": false
+                    }
+                ],
+                "columns": [
+                    { "data": "ProjectId", "name": "ProjectId", "autoWidth": true },
+                    { "data": "ProjectName", "name": "ProjectName", "autoWidth": true },
+                    { "data": "ProjectDescription", "name": "ProjectDescription", "autoWidth": true },
+                    { "data": "Status", "name": "Status", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) {
+                            return moment(full.CreatedOn).format("YYYY-MM-DD HH:mm:ss");
+                        }
+                    },
+                    {
+                        "render": function (data, type, full, meta) {
+                            return '<a class="btn btn-primary" href="/Administration/Project/Edit/' + full.ProjectId + '"><i class="fas fa-edit"></i> Edit</a>';
+                        }
+                    }
+
+                ]
+            });
+
+
+
+        });
+
+        function Delete(ProjectId) {
+            $.confirm({
+                title: 'Delete!',
+                content: 'Do you want to Delete Role!',
+                buttons: {
+                    confirm: function () {
+                        $.ajax({
+                            url: "/Administration/Project/DeleteProject",
+                            type: "POST",
+                            data: { ProjectId: ProjectId },
+                            success: function (data, textStatus, xhr) {
+                                if (data.Result == "success") {
+                                    location.reload();
+                                }
+                                if (data.Result == "failed") {
+                                    $.alert('Something Went Wrong');
+                                }
+                            },
+                            error: function (xhr, status, err) {
+                                if (xhr.status == 401) {
+                                    alert('Error');
+                                    window.location.href = "/Portal/Logout";
+                                }
+                                if (xhr.status == 500) {
+                                    alert('Error');
+                                    window.location.href = "/Portal/Logout";
+                                }
+                            }
+                        });
+                    },
+                    cancel: function () {
+                        $.alert('Canceled!');
+                    }
+                }
+            });
+        }
+
+
+    </script>
+
+
+}
+

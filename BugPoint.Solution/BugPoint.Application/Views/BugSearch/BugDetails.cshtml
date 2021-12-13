@@ -1,0 +1,246 @@
+﻿@model BugPoint.ViewModel.BugsList.DisplayBugViewModel
+@using BugPoint.Common
+
+@using Microsoft.AspNetCore.Http
+<div class="row">
+    <div class="col-md-9">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-bug"></i>
+                    Bug View
+                </h3>
+                <div class="card-tools">
+
+
+
+                    @if (Context.Session.GetString("Portal.String.RoleId") == "2")
+                    {
+                        <a asp-area="Administration" class="btn btn-secondary" asp-controller="Dashboard" asp-action="Dashboard">
+                            Back to Search
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Portal.String.RoleId") == "3")
+                    {
+                        <a asp-area="" class="btn btn-secondary" asp-controller="Manager" asp-action="Dashboard">
+                            Back to Search
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Portal.String.RoleId") == "4")
+                    {
+                        <a asp-area="" class="btn btn-secondary" asp-controller="Dashboard" asp-action="Dashboard">
+                            Back to Search
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Portal.String.RoleId") == "6")
+                    {
+                        <a asp-area="" class="btn btn-secondary" asp-controller="Dashboard" asp-action="MyDashboard">
+                            Back to Search
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Portal.String.RoleId") == "5")
+                    {
+                        <a asp-area="" class="btn btn-secondary" asp-controller="ReporterDashboard" asp-action="Dashboard">
+                            Back to Search
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Portal.String.RoleId") == "7")
+                    {
+                        <a asp-area="" class="btn btn-secondary" asp-controller="ReporterDashboard" asp-action="MyDashboard">
+                            Back to Search
+                        </a>
+                    }
+
+                   
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body" style="display: block;">
+
+                <input type="hidden" asp-for="BugDetailViewModel.BugId" />
+                <div class="form-row">
+                    <div class="form-group col-md-9">
+                        <label asp-for="@Model.BugDetailViewModel.Summary"></label>
+                        <h5> @Model.BugDetailViewModel.Summary</h5>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="@Model.BugDetailViewModel.ProjectComponent"></label><br />
+                        @Model.BugDetailViewModel.ProjectComponent
+                    </div>
+                </div>
+                <hr />
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Priority"></label><br />
+                        @if (Model.BugDetailViewModel.Priority == "Urgent")
+                        {
+                            <button type="button" class="btn btn-Urgent btn-sm">@Model.BugDetailViewModel.Priority</button>
+
+                        }
+                        else if (Model.BugDetailViewModel.Priority == "High")
+                        {
+                            <button type="button" class="btn btn-High btn-sm">@Model.BugDetailViewModel.Priority</button>
+
+                        }
+                        else if (Model.BugDetailViewModel.Priority == "Medium")
+                        {
+                            <button type="button" class="btn btn-Medium btn-sm">@Model.BugDetailViewModel.Priority</button>
+
+                        }
+                        else if (Model.BugDetailViewModel.Priority == "Low")
+                        {
+                            <button type="button" class="btn btn-Low btn-sm">@Model.BugDetailViewModel.Priority</button>
+                        }
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Severity"></label><br />
+                        @Model.BugDetailViewModel.Severity
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Version"></label><br />
+                        @Model.BugDetailViewModel.Version
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Hardware"></label><br />
+                        @Model.BugDetailViewModel.Hardware
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.BrowserName"></label><br />
+                        @Model.BugDetailViewModel.BrowserName
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.OperatingSystemName"></label><br />
+                        @Model.BugDetailViewModel.OperatingSystemName
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.WebFramework"></label><br />
+                        @Model.BugDetailViewModel.WebFramework
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.TestedOn"></label><br />
+                        @Model.BugDetailViewModel.TestedOn
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.BugTypeOn"></label><br />
+                        @Model.BugDetailViewModel.BugTypeOn
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.AssignedTo"></label><br />
+                        @Model.BugDetailViewModel.AssignedTo
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.StatusName"></label><br />
+
+                        @if (Model.BugDetailViewModel.StatusId == 1)
+                        {
+                            <button type="button" class="btn btn-Newx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 2)
+                        {
+                            <button type="button" class="btn btn-Confirmedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 3)
+                        {
+                            <button type="button" class="btn btn-InProgressx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 4)
+                        {
+                            <button type="button" class="btn btn-ReOpenedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 5)
+                        {
+                            <button type="button" class="btn btn-Resolvedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 6)
+                        {
+                            <button type="button" class="btn btn-InTestingx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 7)
+                        {
+                            <button type="button" class="btn btn-Closedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 8)
+                        {
+                            <button type="button" class="btn btn-OnHoldx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 9)
+                        {
+                            <button type="button" class="btn btn-Rejectedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 10)
+                        {
+                            <button type="button" class="btn btn-Replyx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 11)
+                        {
+                            <button type="button" class="btn btn-Duplicatex btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+                        else if (Model.BugDetailViewModel.StatusId == 12)
+                        {
+                            <button type="button" class="btn btn-UnConfirmedx btn-sm">@Model.BugDetailViewModel.StatusName</button>
+                        }
+
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.BugDetailViewModel.Resolution"></label><br />
+                        <button type="button" class="btn btn-lightgreenglowx btn-sm">@Model.BugDetailViewModel.Resolution</button>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="@Model.BugDetailViewModel.Description"></label>
+                        <p>
+                            @Html.Raw(Model.BugDetailViewModel.Description)
+                        </p>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="@Model.BugDetailViewModel.Urls"></label>
+                        <p>
+                            @Model.BugDetailViewModel.Urls
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-info-circle"></i> Quick Information</h3>
+            </div>
+            <div class="card-body">
+
+                <span>
+                    <label>BugID : </label> @Model.BugDetailViewModel.BugId
+                </span>
+                <br />
+                <span>
+                    <label asp-for="@Model.BugDetailViewModel.CreatedBy"></label>
+                    : @Model.BugDetailViewModel.CreatedBy
+                </span>
+                <br />
+                <span>
+                    <label asp-for="@Model.BugDetailViewModel.CreatedOn"></label>
+                    : @Model.BugDetailViewModel.CreatedOn
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>

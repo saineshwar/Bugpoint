@@ -1,0 +1,458 @@
+﻿@model BugPoint.ViewModel.Assigned.ProjectComponentViewModel
+@{
+    ViewBag.PageName = "Component";
+    Layout = "_LayoutUser";
+}
+@await Html.PartialAsync("~/Views/Shared/_DatatablesCss.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_DatatablesScripts.cshtml")
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Add</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form autocomplete="off" asp-controller="Component" asp-antiforgery="true" asp-action="Add" method="post">
+
+            <div class="card-body register-card-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ProjectId"></label>
+                        <select asp-for="ProjectId" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofProjects, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="ProjectId"></span>
+                        <input type="hidden" id="hdnRoleId" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ComponentName"></label>
+                        <input asp-for="ComponentName" maxlength="100" placeholder="Enter Project Name" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ComponentName"></span>
+                        <input type="hidden" id="hdnProjectId" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="ComponentDescription"></label>
+                        <textarea asp-for="ComponentDescription" class="form-control"></textarea>
+                        <span class="text-danger" asp-validation-for="ComponentDescription"></span>
+                        <input type="hidden" id="hdnUserId" />
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="mandatory" asp-for="AssignBugto"></label>
+                        <select asp-for="AssignBugto" class="form-control"
+                                asp-items="@(new SelectList(Model.ListofUsers, "Value", "Text"))">
+                        </select>
+                        <span class="text-danger" asp-validation-for="AssignBugto"></span>
+
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="Status" class="form-check-input" />
+                        <label class="form-check-label" asp-for="Status">Active</label>
+                        <span class="text-danger" asp-validation-for="Status"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" id="btnsubmit" class="btn btn-success">Save</button>
+                <a asp-area="" class="btn btn-danger" asp-controller="Component" asp-action="Add">Clear</a>
+            </div>
+        </form>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Added Components</h3>
+        </div>
+        <div class="card-body register-card-body">
+            <div class="col-md-12">
+
+                <table id="GridDataTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>ProjectComponentId</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>AssignedTo</th>
+                            <th>CreatedOn</th>
+                            <th>Action</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function bindgrid() {
+            if ($("#ProjectId").val() != "") {
+
+
+                $('#GridDataTable').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": false,
+                    "destroy": true,
+                    "cache": false,
+                    "ajax": {
+                        "url": "/Component/GridAllProjectComponents",
+                        "type": "POST",
+                        "datatype": "json",
+                        "data": {
+                            "projectId": $("#ProjectId").val()
+                        }
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": [0],
+                            "visible": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [1],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [2],
+                            "orderable": false,
+                            "searchable": false,
+                            "width": '40%'
+                        },
+                        {
+                            "targets": [3],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [4],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [5],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [6],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [7],
+                            "orderable": false,
+                            "searchable": false
+                        },
+                        {
+                            "targets": [8],
+                            "orderable": false,
+                            "searchable": false
+                        }
+                    ],
+                    "columns": [
+                        { "data": "ProjectComponentId", "name": "ProjectComponentId", "autoWidth": true },
+                        { "data": "ComponentName", "name": "ComponentName", "autoWidth": true },
+                        { "data": "ComponentDescription", "name": "ComponentDescription", "autoWidth": true },
+                        { "data": "Status", "name": "Status", "autoWidth": true },
+                        { "data": "Username", "name": "Username", "autoWidth": true },
+                        {
+                            "render": function (data, type, full, meta) {
+                                return moment(full.CreatedOn).format("YYYY-MM-DD HH:mm:ss");
+                            }
+                        },
+
+                        {
+                            "render": function (data, type, full, meta) {
+                                if (full.Status == "Active") {
+                                    return '<button class="btn btn-success" onclick="UpdateStatus(' + full.ProjectComponentId + ',' + " 'D' " + ')">   InActive</button> ';
+                                }
+
+                                if (full.Status == "InActive") {
+                                    return '<button class="btn btn-danger" onclick="UpdateStatus(' + full.ProjectComponentId + ',' + " 'A' " + ')">   Active </button> ';
+                                }
+
+                            }
+                        },
+                        {
+                            "render": function (data, type, full, meta) {
+                                return '<a class="btn btn-default" href="/Component/Edit/' + full.ProjectComponentId + '"> <i class="fas fa-pencil-alt"></i></a>';
+                            }
+                        },
+                        {
+                            "render": function (data, type, full, meta) {
+
+                                return '<button class="btn btn-default" onclick="Delete(' + full.ProjectComponentId + ')">   <i class="fa fa-trash" aria-hidden="true"></i> </button> ';
+
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            bindgrid();
+        });
+
+        $("#ProjectId").change(function () {
+            $.ajax({
+                type: "POST",
+                url: "/Component/GetUserList",
+                data: { ProjectId: $("#ProjectId").val() },
+                dataType: "json",
+                success: function (data, textStatus, xhr) {
+                    $("#AssignBugto").empty();
+                    $.each(data.listofusers,
+                        function (i) {
+                            var optionhtml = '<option value="' + data.listofusers[i].Value + '">' + data.listofusers[i].Text + '</option>';
+                            $("#AssignBugto").append(optionhtml);
+                        });
+
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 401) {
+                        alert('Error');
+                        window.location.href = "/Portal/Logout";
+                    }
+
+                    if (xhr.status == 500) {
+                        alert('Error');
+                        window.location.href = "/Portal/Logout";
+                    }
+                }
+            });
+
+            bindgrid();
+
+        });
+
+        $("#btnsubmit").click(function () {
+            SaveComponent();
+
+        });
+
+        function SaveComponent() {
+
+            if ($("#ProjectId").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select Project',
+                    type: 'red'
+                });
+            } else if ($("#ComponentName").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Enter Component Name',
+                    type: 'red'
+                });
+            } else if ($("#ComponentDescription").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Enter Component Description',
+                    type: 'red'
+                });
+            }
+            else if ($("#AssignBugto").val() == "") {
+                $.alert({
+                    title: 'Validation!',
+                    content: 'Select Assign to',
+                    type: 'red'
+                });
+            }
+
+            else {
+                $.confirm({
+                    title: 'Confirmation!',
+                    type: 'green',
+                    content: 'Do you want to Save Component?',
+                    buttons: {
+                        confirm: function () {
+                            $("#loader").show();
+
+                            $.ajax({
+                                url: "/Component/Add",
+                                type: "POST",
+                                data:
+                                {
+                                    ProjectId: $("#ProjectId").val(),
+                                    ComponentName: $("#ComponentName").val(),
+                                    ComponentDescription: $("#ComponentDescription").val(),
+                                    Status: $('#Status').prop('checked'),
+                                    AssignBugto: $("#AssignBugto").val()
+                                },
+                                success: function (data, textStatus, xhr) {
+                                    if (data.status == "success") {
+                                        $.alert({
+                                            title: 'Message!',
+                                            content: data.message,
+                                            type: 'green'
+                                        });
+
+                                        $('#GridDataTable').DataTable().clear().draw();
+
+                                        $("#ComponentName").val('');
+                                        $("#ComponentDescription").val('');
+
+                                        $("#loader").hide();
+                                    }
+                                    if (data.status == "failed") {
+                                        $.alert({
+                                            title: 'Message!',
+                                            content: data.message,
+                                            type: 'red'
+                                        });
+                                        $("#loader").hide();
+                                    } else if (data.status == "Validation") {
+                                        $.alert({
+                                            title: 'Message!',
+                                            content: data.message,
+                                            type: 'red'
+                                        });
+
+                                        $("#loader").hide();
+                                    }
+                                },
+
+                                error: function (xhr, status, err) {
+                                    if (xhr.status == 401) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                    if (xhr.status == 500) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                        }
+                    }
+                });
+            }
+
+
+        }
+
+        function Delete(projectComponentId)
+        {
+            if (projectComponentId == "") {
+                $.alert('Something went wrong. Please Try Once Again After Sometime.');
+            } else
+            {
+                $("#loader").show();
+
+                $.confirm({
+                    title: 'Confirmation!',
+                    type: 'red',
+                    content: 'Do you want to Delete Component ?',
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                url: "/Component/Delete",
+                                type: "POST",
+                                data: { ProjectComponentId: projectComponentId },
+                                success: function (data, textStatus, xhr)
+                                {
+                                    if (data.status == "success")
+                                    {
+                                        $("#loader").hide();
+                                        $.alert(data.message);
+                                        $('#GridDataTable').DataTable().clear().draw();
+                                    }
+                                    if (data.status == "failed")
+                                    {
+                                        $("#loader").hide();
+                                        $.alert(data.message);
+                                    }
+                                },
+                                error: function (xhr, status, err) {
+                                    if (xhr.status == 401) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                    if (xhr.status == 500) {
+                                        alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                            $("#loader").hide();
+                        }
+                    }
+                });
+            }
+
+
+        }
+
+
+        function UpdateStatus(assignedProjectId, accessType) {
+            if (assignedProjectId == "") {
+                $.alert('Something went wrong. Please Try Once Again After Sometime.');
+            } else {
+                $("#loader").show();
+
+                $.confirm({
+                    title: 'Confirmation!',
+                    type: 'red',
+                    content: 'Do you want to Remove Project Access ?',
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                url: "/Component/RemoveProjectAccess",
+                                type: "POST",
+                                data: { AssignedProjectId: assignedProjectId, AccessType: accessType },
+                                success: function (data, textStatus, xhr)
+                                {
+                                    if (data.Result == "success")
+                                    {
+                                        $('#GridDataTable').DataTable().clear().draw();
+                                    }
+                                    if (data.Result == "failed")
+                                    {
+                                        $.alert('Something Went Wrong');
+                                        $("#loader").hide();
+                                    }
+                                },
+                                error: function (xhr, status, err) {
+                                    if (xhr.status == 401) {
+                                        $.alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                    if (xhr.status == 500) {
+                                        $.alert('Error');
+                                        window.location.href = "/Portal/Logout";
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                            $("#loader").hide();
+                        }
+                    }
+                });
+            }
+
+
+        }
+    </script>
+
+}

@@ -1,0 +1,124 @@
+﻿@model BugPoint.ViewModel.UserMaster.TeamMembersModel
+
+@{
+    Layout = "_LayoutUser";
+}
+
+
+<div class="col-md-12">
+    <div class="card card-gray card-outline">
+        <div class="card-header">
+            <h3 class="card-title"> <i class="fa fa-users" aria-hidden="true"></i> Team</h3>
+        </div>
+        <div class="card-body register-card-body">
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label class="mandatory" asp-for="ProjectId"></label>
+                    <select asp-for="ProjectId" class="form-control"
+                            asp-items="@(new SelectList(Model.ListofProjects, "Value", "Text"))">
+                    </select>
+                    <span class="text-danger" asp-validation-for="ProjectId"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <div id="teamlist"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        if ($("#ProjectId").val() != "") {
+            var jsonObject =
+            {
+                ProjectId: $("#ProjectId").val()
+            };
+
+            $("#loader").show();
+
+            $.ajax({
+                type: "POST",
+                url: "/Team/GetTeamList",
+                dataType: "html",
+                data: jsonObject,
+
+                success: function (data, textStatus, xhr) {
+                    $("#teamlist").empty();
+                    if (data.length != 0) {
+
+                        $("#teamlist").html(data);
+                        $("#loader").hide();
+                    }
+
+                },
+                error: function (xhr, status, err) {
+                    if (xhr.status == 400) {
+                        DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                    }
+                }
+            });
+
+        }
+
+        $("#ProjectId").change(function ()
+        {
+
+            if ($("#ProjectId").val() != "") {
+                var jsonObject =
+                {
+                    ProjectId: $("#ProjectId").val()
+                };
+
+                $("#loader").show();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Team/GetTeamList",
+                    dataType: "html",
+                    data: jsonObject,
+
+                    success: function (data, textStatus, xhr)
+                    {
+                        $("#teamlist").empty();
+                        if (data.length != 0)
+                        {
+                           
+                            $("#teamlist").html(data);
+                            $("#loader").hide();
+                        }
+                        
+                    },
+                    error: function (xhr, status, err) {
+                        if (xhr.status == 400) {
+                            DisplayModelStateErrors(xhr.responseJSON.ModelState);
+                        }
+                    }
+                });
+
+            }
+
+        });
+    });
+
+
+    function DisplayModelStateErrors(modelState) {
+        var message = "";
+        var propStrings = Object.keys(modelState);
+
+        $.each(propStrings, function (i, propString) {
+            var propErrors = modelState[propString];
+            $.each(propErrors, function (j, propError) {
+                message += propError;
+            });
+            message += "\n";
+        });
+
+        alert(message);
+    };
+
+</script>

@@ -1,0 +1,219 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Common;
+@using X.PagedList.Web.Common
+@model BugPoint.ViewModel.BugsList.ReportedRecentBugListViewModel
+@{
+    Layout = "_LayoutUser";
+}
+
+
+
+<form autocomplete="off" asp-controller="MyBugList" id="frmSearch" enctype="multipart/form-data" asp-action="ShowRecentActivities" method="get">
+
+ 
+    <div class="card  card-outline">
+        <div class="card-header">
+            <h3 class="card-title"> <i class="fas fa-clock"></i> Recent Activities </h3>
+        </div>
+        <div class="card-body register-card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>BugId</th>
+                        <th>Project</th>
+                        <th>Summary</th>
+                        <th>Component</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Resolution</th>
+                        <th>Severity</th>
+                        <th>CreatedOn</th>
+                        <th>ClosedOn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.BugListGrid.Any())
+                    {
+                        @foreach (var bugs in Model.BugListGrid)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-area="" class="btn btn-outline-dark" asp-controller="MyBugDetails" asp-action="Details" asp-route-id="@bugs.BugId">#@bugs.BugId</a>
+                                </td>
+                                <td>
+                                    @bugs.ProjectName
+                                </td>
+                                <td class="textmerge">
+                                    @bugs.Summary
+                                </td>
+
+                                <td>
+                                    @bugs.ComponentName
+                                </td>
+                                <td>
+                                    @if (bugs.PriorityName == "Urgent")
+                                    {
+                                        <button type="button" class="btn btn-Urgent btn-sm">@bugs.PriorityName</button>
+
+                                    }
+                                    else if (bugs.PriorityName == "High")
+                                    {
+                                        <button type="button" class="btn btn-High btn-sm">@bugs.PriorityName</button>
+
+                                    }
+                                    else if (bugs.PriorityName == "Medium")
+                                    {
+                                        <button type="button" class="btn btn-Medium btn-sm">@bugs.PriorityName</button>
+
+                                    }
+                                    else if (bugs.PriorityName == "Low")
+                                    {
+                                        <button type="button" class="btn btn-Low btn-sm">@bugs.PriorityName</button>
+                                    }
+                                </td>
+                                <td>
+                                    @if (bugs.StatusId == 1)
+                                    {
+                                        <button type="button" class="btn btn-Newx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 2)
+                                    {
+                                        <button type="button" class="btn btn-Confirmedx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 3)
+                                    {
+                                        <button type="button" class="btn btn-InProgressx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 4)
+                                    {
+                                        <button type="button" class="btn btn-ReOpenedx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 5)
+                                    {
+                                        <button type="button" class="btn btn-Resolvedx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 6)
+                                    {
+                                        <button type="button" class="btn btn-InTestingx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 7)
+                                    {
+                                        <button type="button" class="btn btn-Closedx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 8)
+                                    {
+                                        <button type="button" class="btn btn-OnHoldx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 9)
+                                    {
+                                        <button type="button" class="btn btn-Rejectedx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 10)
+                                    {
+                                        <button type="button" class="btn btn-Replyx btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 11)
+                                    {
+                                        <button type="button" class="btn btn-Duplicatex btn-sm">@bugs.StatusName</button>
+                                    }
+                                    else if (bugs.StatusId == 12)
+                                    {
+                                        <button type="button" class="btn btn-UnConfirmedx btn-sm">@bugs.StatusName</button>
+                                    }
+                                </td>
+                                <td>
+                                    @if (bugs.Resolution == "NA")
+                                    {
+                                        <i class="fas fa-grip-lines"></i>
+                                    }
+                                    else
+                                    {
+                                        @bugs.Resolution
+                                    }
+                                </td>
+                                <td>
+                                    @bugs.Severity
+                                </td>
+                                <td>
+                                    @bugs.CreatedOn
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(bugs.ClosedOn))
+                                    {
+                                        @bugs.ClosedOn
+                                    }
+                                    else
+                                    {
+                                        <text>
+                                            <i class="fas fa-grip-lines"></i>
+                                        </text>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="10">
+                                @Html.PagedListPager((IPagedList)Model.BugListGrid,
+                                    page => Url.Action("ShowRecentActivities", new
+                                    {
+                                        page = page
+                                    })
+                                    , new PagedListRenderOptionsBase
+                                    {
+                                        LiElementClasses = new string[] { "page-item" },
+                                        PageClasses = new string[] { "page-link" },
+                                        Display = PagedListDisplayMode.Always
+
+                                    })
+                            </td>
+                        </tr>
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="12">
+                                <i class="far fa-smile"></i>  No Bugs to Display.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+ 
+            $("#btnclear").click(function () {
+                $.confirm({
+                    title: 'Confirmation!',
+                    type: 'green',
+                    content: 'Do you want to Clear Filters?',
+                    buttons: {
+                        confirm: function () {
+                            window.location = '/MyBugList/ShowRecentActivities';
+                        },
+                        cancel: function () {
+                            $.alert('Canceled!');
+                        }
+                    }
+                });
+            });
+
+          
+
+
+        });
+
+    </script>
+
+
+}

@@ -1,0 +1,31 @@
+﻿@model BugPoint.ViewModel.Charts.ReporterCommonMainViewModel
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>@Model.Heading</th>
+            <th>TotalCount</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (Model.ReporterCommonViewModel.Any())
+    {
+        @foreach (var data in Model.ReporterCommonViewModel)
+        {
+            <tr>
+                <td>@data.TextValue</td>
+                <td>@data.TotalCount</td>
+
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="2">
+                <i class="far fa-smile"></i>  No Bugs to Display.
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

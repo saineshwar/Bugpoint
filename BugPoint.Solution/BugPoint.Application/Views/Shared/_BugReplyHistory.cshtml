@@ -1,0 +1,165 @@
+﻿@using BugPoint.Data.Bugs.Queries
+@using System.Globalization
+@using BugPoint.Common
+@model BugPoint.ViewModel.Bugs.ViewBugReplyMainModel
+@inject IBugQueries BugQueries;
+
+@foreach (var data in Model.ListofTicketreply)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-default card-outline collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-reply"></i>
+                        @if (data.EditOption == "Reporter")
+                        {
+                            <button type="button" class="btn btn-lightbluechatx btn-sm">@data.RepliedUserName</button>
+
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-darktbluechatx btn-sm">@data.RepliedUserName</button>
+
+
+                        }
+
+
+
+
+                    </h3>
+                    <div class="card-tools">
+                        @if (data.EditOption == "Reporter")
+                        {
+                            <button type="button" class="btn btn-darktpurpletimex btn-sm">
+                                <i style="font-size: 14px; color: #50C878" class="fa fa-clock"></i>
+                                @data.CreatedOn.ToString("dd-MM-yyyy hh:mm tt", CultureInfo.InvariantCulture)
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary btn-sm">
+                                <i style="font-size: 14px; color: #50C878" class="fa fa-clock"></i>
+                                @data.CreatedOn.ToString("dd-MM-yyyy hh:mm tt", CultureInfo.InvariantCulture)
+                            </button>
+                        }
+
+                        @if (ViewBag.CurrentBugStatus != null)
+                        {
+                            if ((int)ViewBag.CurrentBugStatus != (int)StatusHelper.Status.CLOSED && data.RoleId == (int)ViewBag.Currentrole)
+                            {
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                    @if (ViewBag.CurrentBugStatus != null)
+                                    {
+                                        if ((int)ViewBag.CurrentBugStatus != (int)StatusHelper.Status.CLOSED && data.RoleId == (int)ViewBag.Currentrole)
+                                        {
+                                            <div class="dropdown-menu dropdown-menu-right" role="menu" style="">
+                                                <a href="/Bug/EditReply?id=@data.BugId&rid=@data.BugReplyId" class="dropdown-item"> <i class="fas fa-pencil-alt"></i> Edit Bug</a>
+                                            </div>
+                                        }
+                                    }
+
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="btn-group">
+                                    <button type="button" disabled="disabled" class="btn btn-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                </div>
+                            }
+
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-plus"></i>
+                            </button>
+
+                        }
+                    </div>
+                </div>
+
+                <div class="card-body" style="display: none;">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="@data.Description"></label>
+                            <p>
+                                @Html.Raw(data.Description)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer pull-right">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            @{
+                                var listofReplyAttachment = BugQueries.GetListReplyAttachmentsByAttachmentId(data.BugId, data.BugReplyId);
+                            }
+
+                            @if (listofReplyAttachment.Any())
+                            {
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Attachment</th>
+                                            <th>Download</th>
+                                            @if (ViewBag.CurrentBugStatus != null)
+                                            {
+                                                if ((int)ViewBag.CurrentBugStatus != (int)StatusHelper.Status.CLOSED && data.RoleId == (int)ViewBag.Currentrole)
+                                                {
+                                                    <th>Action</th>
+                                                }
+                                            }
+
+                                        </tr>
+                                            
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var attachment in listofReplyAttachment)
+                                        {
+                                            <tr>
+                                                <td>@attachment.OriginalAttachmentName</td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs"
+                                                       data-toggle="tooltip" data-placement="top"
+                                                       title="Download Attachment !" onclick="downloadReplyAttachment('@attachment.BugId', '@attachment.ReplyAttachmentId')" href="javascript:void(0);"> <i class="fa fa-download"></i> Download </a>
+
+                                                </td>
+                                                @if (ViewBag.CurrentBugStatus != null)
+                                                {
+                                                    if ((int)ViewBag.CurrentBugStatus != (int)StatusHelper.Status.CLOSED && data.RoleId == (int)ViewBag.Currentrole)
+                                                    {
+                                                        <td>
+                                                            <a data-toggle="tooltip"
+                                                               data-placement="top"
+                                                               title="Delete Attachment !"
+                                                               class="btn btn-danger btn-xs" onclick="deleteAttachment('@attachment.ReplyAttachmentId', '@attachment.BugId')" href="javascript:void(0);"> <i class="fa fa-trash"></i> Delete </a>
+                                                        </td>
+                                                    }
+                                                }
+
+                                                </tr>
+                                            }
+
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p> No Attachments </p>
+                        }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
