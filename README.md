@@ -1,6 +1,6 @@
 ![ms-icon-70x70](https://github.com/saineshwar/Bugpoint/blob/main/ladybug64.png)
 # Bugpoint
-Bugpoint is an application for Managing and Tracking application Bug.
+Bugpoint is an Free application for Managing and Tracking application Bug.
 
 We have different roles in the Bugpoint application and according to the role, we have different features.
 
