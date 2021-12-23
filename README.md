@@ -23,7 +23,7 @@ If you find project really helpful in Quick Learning do give it a star.
 width="200" data-canonical-src="https://cdn.buymeacoffee.com/buttons/default-orange.png" style="max-width:100%;"></a>
 
 ## Video 
-[![IMAGE ALT TEXT](https://github.com/saineshwar/Bugpoint/blob/main/maxresdefault.jpg)](https://youtu.be/COwL07RQQhM "Video Title")
+[![IMAGE ALT TEXT](https://github.com/saineshwar/Bugpoint/blob/main/maxresdefault.jpg)](https://youtu.be/COwL07RQQhM "Click to View Video")
 
 
 ## Technologies Used
